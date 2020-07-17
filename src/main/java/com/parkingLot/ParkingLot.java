@@ -1,7 +1,6 @@
 package com.parkingLot;
 
-import static com.parkingLot.ParkingLotException.ExceptionType.NO_SUCH_VEHICLE;
-import static com.parkingLot.ParkingLotException.ExceptionType.SPACE_NOT_AVAILABLE;
+import static com.parkingLot.ParkingLotException.ExceptionType.*;
 
 public class ParkingLot {
     private static Object parkSpace = null;
@@ -15,9 +14,8 @@ public class ParkingLot {
     }
 
     public boolean unPark(Vehicle car) throws ParkingLotException {
-        if (parkSpace == car) {
-            return true;
-        }
+        if (parkSpace == null) throw new ParkingLotException(PARK_SPACE_EMPTY);
+        if (parkSpace == car) return true;
         throw new ParkingLotException(NO_SUCH_VEHICLE);
     }
 }
