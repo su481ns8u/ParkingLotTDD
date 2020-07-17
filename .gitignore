@@ -28,3 +28,4 @@ hs_err_pid*
 /gradlew.bat
 /settings.gradle
 /gradlew
+/build/
