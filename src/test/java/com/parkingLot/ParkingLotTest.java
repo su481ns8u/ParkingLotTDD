@@ -54,4 +54,19 @@ public class ParkingLotTest {
             Assert.assertEquals(PARK_SPACE_EMPTY, e.type);
         }
     }
+
+    @Test
+    public void putLotFullSign_WhenParkingLotFull_ReturnsTrue() throws ParkingLotException {
+        Vehicle car1 = new Vehicle("WHITE", "MH51QE8520", "TOYOTA");
+        parkingLot.park(car1);
+        Assert.assertTrue(parkingLot.putFullSign());
+    }
+
+    @Test
+    public void putLotFullSign_WhenParkingLotNotFull_ReturnsFalse() throws ParkingLotException {
+        Vehicle car1 = new Vehicle("WHITE", "MH51QE8520", "TOYOTA");
+        parkingLot.park(car1);
+        parkingLot.unPark(car1);
+        Assert.assertFalse(parkingLot.putFullSign());
+    }
 }
