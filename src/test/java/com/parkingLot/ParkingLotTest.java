@@ -3,8 +3,7 @@ package com.parkingLot;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static com.parkingLot.ParkingLotException.ExceptionType.NO_SUCH_VEHICLE;
-import static com.parkingLot.ParkingLotException.ExceptionType.SPACE_NOT_AVAILABLE;
+import static com.parkingLot.ParkingLotException.ExceptionType.*;
 
 public class ParkingLotTest {
     ParkingLot parkingLot = new ParkingLot();
@@ -43,6 +42,16 @@ public class ParkingLotTest {
             parkingLot.unPark(car1);
         } catch (ParkingLotException e) {
             Assert.assertEquals(NO_SUCH_VEHICLE, e.type);
+        }
+    }
+
+    @Test
+    public void givenNotParkedCar_WhenAttemptToUnPark_ShouldThrowException() {
+        try {
+            Vehicle car1 = new Vehicle("WHITE", "MH51QE8520", "TOYOTA");
+            parkingLot.unPark(car1);
+        } catch (ParkingLotException e) {
+            Assert.assertEquals(PARK_SPACE_EMPTY, e.type);
         }
     }
 }
