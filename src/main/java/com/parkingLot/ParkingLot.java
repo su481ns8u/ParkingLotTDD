@@ -30,5 +30,7 @@ public class ParkingLot {
         return parkSpace != null;
     }
 
-
+    public boolean takeInFullSign() {
+        return parkSpace == null;
+    }
 }
