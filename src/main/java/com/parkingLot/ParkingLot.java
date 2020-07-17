@@ -3,7 +3,7 @@ package com.parkingLot;
 import static com.parkingLot.ParkingLotException.ExceptionType.*;
 
 public class ParkingLot {
-    private static Object parkSpace = null;
+    private Object parkSpace = null;
 
     public boolean park(Vehicle car) throws ParkingLotException {
         if (parkSpace == null) {
@@ -25,4 +25,10 @@ public class ParkingLot {
     public boolean putFullSign() {
         return parkSpace != null;
     }
+
+    public boolean redirectSecurity() {
+        return parkSpace != null;
+    }
+
+
 }
