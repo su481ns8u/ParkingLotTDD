@@ -15,7 +15,14 @@ public class ParkingLot {
 
     public boolean unPark(Vehicle car) throws ParkingLotException {
         if (parkSpace == null) throw new ParkingLotException(PARK_SPACE_EMPTY);
-        if (parkSpace == car) return true;
+        if (parkSpace == car) {
+            parkSpace = null;
+            return true;
+        }
         throw new ParkingLotException(NO_SUCH_VEHICLE);
+    }
+
+    public boolean putFullSign() {
+        return parkSpace != null;
     }
 }
