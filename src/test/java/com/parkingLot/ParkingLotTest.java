@@ -1,12 +1,18 @@
 package com.parkingLot;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import static com.parkingLot.ParkingLotException.ExceptionType.*;
 
 public class ParkingLotTest {
-    ParkingLot parkingLot = new ParkingLot();
+    ParkingLot parkingLot;
+
+    @Before
+    public void setUp() throws Exception {
+         parkingLot = new ParkingLot();
+    }
 
     @Test
     public void givenACarObject_WhenParking_IfAvailableReturnsTrue() throws ParkingLotException {
@@ -37,9 +43,9 @@ public class ParkingLotTest {
     public void givenParkedCar_WhenAttemptedToUnParkFor2Times_ShouldThrowException() {
         try {
             Vehicle car1 = new Vehicle("WHITE", "MH51QE8520", "TOYOTA");
+            Vehicle car2 = new Vehicle("WHITE", "MH51QE8520", "TOYOTA");
             parkingLot.park(car1);
-            parkingLot.unPark(car1);
-            parkingLot.unPark(car1);
+            parkingLot.unPark(car2);
         } catch (ParkingLotException e) {
             Assert.assertEquals(NO_SUCH_VEHICLE, e.type);
         }
@@ -68,5 +74,20 @@ public class ParkingLotTest {
         parkingLot.park(car1);
         parkingLot.unPark(car1);
         Assert.assertFalse(parkingLot.putFullSign());
+    }
+
+    @Test
+    public void redirectSecurity_WhenParkingLotFull_ReturnsTrue() throws ParkingLotException {
+        Vehicle car1 = new Vehicle("WHITE", "MH51QE8520", "TOYOTA");
+        parkingLot.park(car1);
+        Assert.assertTrue(parkingLot.redirectSecurity());
+    }
+
+    @Test
+    public void redirectSecurity_WhenParkingLotNotFull_ReturnsFalse() throws ParkingLotException {
+        Vehicle car1 = new Vehicle("WHITE", "MH51QE8520", "TOYOTA");
+        parkingLot.park(car1);
+        parkingLot.unPark(car1);
+        Assert.assertFalse(parkingLot.redirectSecurity());
     }
 }
