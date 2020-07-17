@@ -10,7 +10,7 @@ public class ParkingLotTest {
     ParkingLot parkingLot;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
          parkingLot = new ParkingLot();
     }
 
@@ -89,5 +89,20 @@ public class ParkingLotTest {
         parkingLot.park(car1);
         parkingLot.unPark(car1);
         Assert.assertFalse(parkingLot.redirectSecurity());
+    }
+
+    @Test
+    public void takeInLotFullSign_WhenParkingLotNotFull_ReturnsTrue() throws ParkingLotException {
+        Vehicle car1 = new Vehicle("WHITE", "MH51QE8520", "TOYOTA");
+        parkingLot.park(car1);
+        parkingLot.unPark(car1);
+        Assert.assertTrue(parkingLot.takeInFullSign());
+    }
+
+    @Test
+    public void takeInLotFullSign_WhenParkingLotFull_ReturnsFalse() throws ParkingLotException {
+        Vehicle car1 = new Vehicle("WHITE", "MH51QE8520", "TOYOTA");
+        parkingLot.park(car1);
+        Assert.assertFalse(parkingLot.takeInFullSign());
     }
 }
