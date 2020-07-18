@@ -12,6 +12,7 @@ public class ParkingLot {
     List<Vehicle> lotList = new ArrayList<>();
 
     public boolean park(Vehicle car) throws ParkingLotException {
+        if (lotList.contains(car)) throw new ParkingLotException(VEHICLE_ALREADY_EXISTS);
         if (lotList.size() < TOTAL_NO_OF_LOTS) {
             lotList.add(car);
             return true;

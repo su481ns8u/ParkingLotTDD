@@ -4,7 +4,8 @@ public class ParkingLotException extends Throwable {
     public enum ExceptionType {
         SPACE_NOT_AVAILABLE("Parking space is not available!"),
         NO_SUCH_VEHICLE("Given vehicle is not present!"),
-        PARK_SPACE_EMPTY("No vehicles at parking!");
+        PARK_SPACE_EMPTY("No vehicles at parking!"),
+        VEHICLE_ALREADY_EXISTS("Entered vehicle is already there in lot");
 
         String message;
 
