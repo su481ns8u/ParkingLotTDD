@@ -49,7 +49,7 @@ public class ParkingLotTest {
     public void givenParkedCar_WhenAttemptedToUnParkFor2Times_ShouldThrowException() {
         try {
             Vehicle car1 = new Vehicle("WHITE", "MH51QE8520", "TOYOTA");
-            Vehicle car2 = new Vehicle("WHITE", "MH51QE8520", "TOYOTA");
+            Vehicle car2 = new Vehicle("BLACK", "MH51QE8520", "TOYOTA");
             parkingLot.park(car1);
             parkingLot.unPark(car2);
         } catch (ParkingLotException e) {

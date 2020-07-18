@@ -9,7 +9,7 @@ import static com.parkingLot.exceptions.ParkingLotException.ExceptionType.*;
 
 public class ParkingLot {
     private final int TOTAL_NO_OF_LOTS = 2;
-    List<Vehicle> lotList = new ArrayList<>();
+    private final List<Vehicle> lotList = new ArrayList<>();
 
     public boolean park(Vehicle car) throws ParkingLotException {
         if (lotList.contains(car)) throw new ParkingLotException(VEHICLE_ALREADY_EXISTS);
