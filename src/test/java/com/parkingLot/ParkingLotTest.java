@@ -28,7 +28,7 @@ public class ParkingLotTest {
         try {
             Vehicle car1 = new Vehicle("WHITE", "MH51QE8520", "TOYOTA");
             Vehicle car2 = new Vehicle("RED", "MH22QW2991", "SUZUKI");
-            Vehicle car3 = new Vehicle("RED", "MH22QW2991", "SUZUKI");
+            Vehicle car3 = new Vehicle("BLUE", "MH22QW2991", "SUZUKI");
             parkingLot.park(car1);
             parkingLot.park(car2);
             parkingLot.park(car3);
@@ -70,7 +70,7 @@ public class ParkingLotTest {
     @Test
     public void putLotFullSign_WhenParkingLotFull_ReturnsTrue() throws ParkingLotException {
         Vehicle car1 = new Vehicle("WHITE", "MH51QE8520", "TOYOTA");
-        Vehicle car2 = new Vehicle("WHITE", "MH51QE8520", "TOYOTA");
+        Vehicle car2 = new Vehicle("BLACK", "MH51QE8520", "TOYOTA");
         parkingLot.park(car1);
         parkingLot.park(car2);
         Assert.assertTrue(parkingLot.putFullSign());
@@ -86,7 +86,7 @@ public class ParkingLotTest {
     @Test
     public void redirectSecurity_WhenParkingLotFull_ReturnsTrue() throws ParkingLotException {
         Vehicle car1 = new Vehicle("WHITE", "MH51QE8520", "TOYOTA");
-        Vehicle car2 = new Vehicle("WHITE", "MH51QE8520", "TOYOTA");
+        Vehicle car2 = new Vehicle("BLUE", "MH51QE8520", "TOYOTA");
         parkingLot.park(car1);
         parkingLot.park(car2);
         Assert.assertTrue(parkingLot.redirectSecurity());
@@ -102,7 +102,7 @@ public class ParkingLotTest {
     @Test
     public void takeInLotFullSign_WhenParkingLotNotFull_ReturnsTrue() throws ParkingLotException {
         Vehicle car1 = new Vehicle("WHITE", "MH51QE8520", "TOYOTA");
-        Vehicle car2 = new Vehicle("WHITE", "MH51QE8520", "TOYOTA");
+        Vehicle car2 = new Vehicle("BLACK", "MH51QE8520", "TOYOTA");
         parkingLot.park(car1);
         parkingLot.park(car2);
         boolean result1 = parkingLot.putFullSign();
@@ -115,8 +115,31 @@ public class ParkingLotTest {
     public void takeInLotFullSign_WhenParkingLotFull_ReturnsFalse() throws ParkingLotException {
         Vehicle car1 = new Vehicle("WHITE", "MH51QE8520", "TOYOTA");
         parkingLot.park(car1);
-        Vehicle car2 = new Vehicle("WHITE", "MH51QE8520", "TOYOTA");
+        Vehicle car2 = new Vehicle("BLACK", "MH51QE8520", "TOYOTA");
         parkingLot.park(car2);
         Assert.assertFalse(parkingLot.takeInFullSign());
+    }
+
+    @Test
+    public void givenSingleCarTwiceForParking_ShouldThrowException() {
+        try {
+            Vehicle car1 = new Vehicle("WHITE", "MH51QE8520", "TOYOTA");
+            parkingLot.park(car1);
+            parkingLot.park(car1);
+        } catch (ParkingLotException e) {
+            Assert.assertEquals(VEHICLE_ALREADY_EXISTS, e.type);
+        }
+    }
+
+    @Test
+    public void givenTwoCarsWithSameParamsForParking_ShouldThrowException() {
+        try {
+            Vehicle car1 = new Vehicle("WHITE", "MH51QE8520", "TOYOTA");
+            Vehicle car2 = new Vehicle("WHITE", "MH51QE8520", "TOYOTA");
+            parkingLot.park(car1);
+            parkingLot.park(car2);
+        } catch (ParkingLotException e) {
+            Assert.assertEquals(VEHICLE_ALREADY_EXISTS, e.type);
+        }
     }
 }
