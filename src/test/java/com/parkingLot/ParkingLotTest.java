@@ -44,6 +44,17 @@ public class ParkingLotTest {
     }
 
     @Test
+    public void givenSameVehicleTwice_WhenParked_ShouldThrowException() {
+        try {
+            Object car = new Object();
+            parkingLot.park(car);
+            parkingLot.park(car);
+        } catch (ParkingLotException e) {
+            Assert.assertEquals(CAR_ALREADY_PARKED, e.type);
+        }
+    }
+
+    @Test
     public void givenParkedCar_WhenAttemptedToUnParkFor2Times_ShouldThrowException() {
         try {
             Object car1 = new Object();
