@@ -13,7 +13,7 @@ public class ParkingLotTest {
 
     @Before
     public void setUp() {
-        parkingLot = new ParkingLot();
+        parkingLot = new ParkingLot(2);
     }
 
     @Test
@@ -80,6 +80,8 @@ public class ParkingLotTest {
     public void putLotFullSign_WhenParkingLotFull_ReturnsTrue() throws ParkingLotException {
         Object car1 = new Object();
         parkingLot.park(car1);
+        Object car2 = new Object();
+        parkingLot.park(car2);
         Assert.assertTrue(parkingLot.fullSignStatus());
     }
 
@@ -87,11 +89,16 @@ public class ParkingLotTest {
     public void redirectSecurity_WhenParkingLotFull_ReturnsTrue() throws ParkingLotException {
         Object car1 = new Object();
         parkingLot.park(car1);
+        Object car2 = new Object();
+        parkingLot.park(car2);
         Assert.assertTrue(parkingLot.securityStatus());
     }
 
     @Test
-    public void putLotFullSign_WhenParkingLotHasSpace_ReturnsFalse(){
+    public void putLotFullSign_WhenParkingLotHasSpace_ReturnsFalse() throws ParkingLotException {
+        Object car1 = new Object();
+        parkingLot.park(car1);
+        parkingLot.unPark(car1);
         Assert.assertFalse(parkingLot.fullSignStatus());
     }
 }
