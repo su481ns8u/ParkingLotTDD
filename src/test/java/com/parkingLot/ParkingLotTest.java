@@ -11,7 +11,7 @@ public class ParkingLotTest {
 
     @Before
     public void setUp() {
-         parkingLot = new ParkingLot();
+        parkingLot = new ParkingLot();
     }
 
     @Test
@@ -75,5 +75,10 @@ public class ParkingLotTest {
         Object car1 = new Object();
         parkingLot.park(car1);
         Assert.assertTrue(parkingLot.securityStatus());
+    }
+
+    @Test
+    public void putLotFullSign_WhenParkingLotHasSpace_ReturnsFalse() throws ParkingLotException {
+        Assert.assertFalse(parkingLot.fullSignStatus());
     }
 }

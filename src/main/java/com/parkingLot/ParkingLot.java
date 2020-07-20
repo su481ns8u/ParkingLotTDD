@@ -1,11 +1,14 @@
 package com.parkingLot;
 
 import static com.parkingLot.ParkingLotException.ExceptionType.*;
-import static com.parkingLot.Users.OWNER;
-import static com.parkingLot.Users.SECURITY;
+import static com.parkingLot.Users.*;
 
 public class ParkingLot {
     private Object parkSpace = null;
+
+    ParkingLot() {
+        this.changeStatus();
+    }
 
     public void park(Object car) throws ParkingLotException {
         if (car == null) throw new ParkingLotException(INVALID_VEHICLE);
@@ -18,6 +21,7 @@ public class ParkingLot {
         if (parkSpace == null) throw new ParkingLotException(PARK_SPACE_EMPTY);
         if (parkSpace != car) throw new ParkingLotException(NO_SUCH_VEHICLE);
         parkSpace = null;
+        this.changeStatus();
     }
 
     public boolean parkStatue(Object car) {
@@ -25,6 +29,7 @@ public class ParkingLot {
     }
 
     private void changeStatus() {
+        if (parkSpace == null) OWNER.status = false;
         if (parkSpace != null) {
             OWNER.status = true;
             SECURITY.status = true;
