@@ -1,4 +1,4 @@
-package com.parkingLot;
+package com.parkingLot.exceptions;
 
 public class ParkingLotException extends Throwable {
     public enum ExceptionType {
