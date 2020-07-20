@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.parkingLot.ParkingLotTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2020-07-20T02:33:12" hostname="DESKTOP-9DCLVAF" time="0.013">
+  <properties/>
+  <testcase name="givenNotParkedCar_WhenAttemptToUnPark_ShouldThrowException" classname="com.parkingLot.ParkingLotTest" time="0.004"/>
+  <testcase name="redirectSecurity_WhenParkingLotFull_ReturnsTrue" classname="com.parkingLot.ParkingLotTest" time="0.0"/>
+  <testcase name="givenCarObject_WhenParking_IfNotAvailableThrowsException" classname="com.parkingLot.ParkingLotTest" time="0.0"/>
+  <testcase name="givenACarObject_WhenParking_IfAvailableReturnsTrue" classname="com.parkingLot.ParkingLotTest" time="0.002"/>
+  <testcase name="putLotFullSign_WhenParkingLotFull_ReturnsTrue" classname="com.parkingLot.ParkingLotTest" time="0.0"/>
+  <testcase name="putLotFullSign_WhenParkingLotHasSpace_ReturnsFalse" classname="com.parkingLot.ParkingLotTest" time="0.0"/>
+  <testcase name="givenParkedCar_WhenAttemptedToUnParkFor2Times_ShouldThrowException" classname="com.parkingLot.ParkingLotTest" time="0.001"/>
+  <testcase name="givenParkedCarObject_WhenUnParked_IfSuccessReturnTrue" classname="com.parkingLot.ParkingLotTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

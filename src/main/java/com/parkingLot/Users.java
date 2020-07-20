@@ -1,7 +1,7 @@
 package com.parkingLot;
 
 public enum Users {
-    OWNER(false), SECURITY(false);
+    OWNER(false);
 
     boolean status;
 

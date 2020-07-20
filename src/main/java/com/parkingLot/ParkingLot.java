@@ -25,17 +25,11 @@ public class ParkingLot {
     }
 
     private void changeStatus() {
-        if (parkSpace != null) {
+        if (parkSpace != null)
             OWNER.status = true;
-            SECURITY.status = true;
-        }
     }
 
     public boolean fullSignStatus() {
         return OWNER.status;
-    }
-
-    public boolean securityStatus() {
-        return SECURITY.status;
     }
 }
