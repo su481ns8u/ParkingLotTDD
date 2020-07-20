@@ -2,7 +2,6 @@ package com.parkingLot;
 
 import static com.parkingLot.ParkingLotException.ExceptionType.*;
 import static com.parkingLot.Users.OWNER;
-import static com.parkingLot.Users.SECURITY;
 
 public class ParkingLot {
     private Object parkSpace = null;
