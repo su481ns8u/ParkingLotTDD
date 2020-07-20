@@ -1,10 +1,12 @@
 package com.parkingLot;
 
+import com.parkingLot.exceptions.ParkingLotException;
+import com.parkingLot.services.ParkingLot;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import static com.parkingLot.ParkingLotException.ExceptionType.*;
+import static com.parkingLot.exceptions.ParkingLotException.ExceptionType.*;
 
 public class ParkingLotTest {
     ParkingLot parkingLot;
@@ -78,7 +80,7 @@ public class ParkingLotTest {
     }
 
     @Test
-    public void putLotFullSign_WhenParkingLotHasSpace_ReturnsFalse() throws ParkingLotException {
+    public void putLotFullSign_WhenParkingLotHasSpace_ReturnsFalse(){
         Assert.assertFalse(parkingLot.fullSignStatus());
     }
 }

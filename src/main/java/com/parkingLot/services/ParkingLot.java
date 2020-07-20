@@ -1,12 +1,14 @@
-package com.parkingLot;
+package com.parkingLot.services;
 
-import static com.parkingLot.ParkingLotException.ExceptionType.*;
-import static com.parkingLot.Users.*;
+import com.parkingLot.exceptions.ParkingLotException;
+
+import static com.parkingLot.exceptions.ParkingLotException.ExceptionType.*;
+import static com.parkingLot.enums.Users.*;
 
 public class ParkingLot {
     private Object parkSpace = null;
 
-    ParkingLot() {
+    public ParkingLot() {
         this.changeStatus();
     }
 
