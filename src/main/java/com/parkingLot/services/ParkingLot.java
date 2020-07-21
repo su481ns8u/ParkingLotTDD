@@ -1,30 +1,39 @@
 package com.parkingLot.services;
 
-import com.parkingLot.enums.LotObservers;
+import com.parkingLot.observers.LotObservers;
 import com.parkingLot.exceptions.ParkingLotException;
 
-import java.util.HashMap;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static com.parkingLot.exceptions.ParkingLotException.ExceptionType.*;
 
 public class ParkingLot {
-    private final int lotSize;
     private final LotObservers observers;
     private final HashMap<Integer, Object> vehicles;
-    private int lotCount = 0;
 
     public ParkingLot(int lotSize) {
         observers = new LotObservers();
         vehicles = new HashMap<>();
-        this.lotSize = lotSize;
+        IntStream.range(0, lotSize).forEach(i -> vehicles.put(i, null));
     }
 
-    public void park(Object car) throws ParkingLotException {
+    public void park(int lotNum, Object car) throws ParkingLotException {
         if (vehicles.containsValue(car)) throw new ParkingLotException(CAR_ALREADY_PARKED);
         if (car == null) throw new ParkingLotException(INVALID_VEHICLE);
-        if (vehicles.size() == lotSize) throw new ParkingLotException(SPACE_NOT_AVAILABLE);
-        vehicles.put(lotCount++, car);
-        this.setStatus();
+        if (!this.getEmptyLots().contains(lotNum)) throw new ParkingLotException(LOT_NOT_AVAILABLE);
+        if (!vehicles.containsValue(null)) throw new ParkingLotException(SPACE_NOT_AVAILABLE);
+        vehicles.put(lotNum, car);
+        this.notifyObserver();
+    }
+
+    public List<Integer> getEmptyLots() {
+        return vehicles.entrySet()
+                .stream()
+                .filter(v -> Objects.equals(v.getValue(), null))
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
     }
 
     public void unPark(Object car) throws ParkingLotException {
@@ -32,15 +41,15 @@ public class ParkingLot {
         if (!vehicles.containsValue(car)) throw new ParkingLotException(NO_SUCH_VEHICLE);
         vehicles.entrySet()
                 .removeIf(entry -> car.equals(entry.getValue()));
-        this.setStatus();
+        this.notifyObserver();
     }
 
     public boolean parkStatue(Object car) {
         return vehicles.containsValue(car);
     }
 
-    private void setStatus() {
-        if (vehicles.size() < lotSize) observers.informLotFullStatus(false);
-        if (vehicles.size() == lotSize) observers.informLotFullStatus(true);
+    private void notifyObserver() {
+        if (vehicles.containsValue(null)) observers.informLotFullStatus(false);
+        if (!vehicles.containsValue(null)) observers.informLotFullStatus(true);
     }
 }

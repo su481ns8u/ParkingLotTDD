@@ -1,4 +1,4 @@
-package com.parkingLot.enums;
+package com.parkingLot.observers;
 
 import java.util.ArrayList;
 import java.util.Collections;

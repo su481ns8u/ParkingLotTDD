@@ -1,4 +1,4 @@
-package com.parkingLot.enums;
+package com.parkingLot.observers;
 
 public enum Users {
     OWNER(false), SECURITY(false);
