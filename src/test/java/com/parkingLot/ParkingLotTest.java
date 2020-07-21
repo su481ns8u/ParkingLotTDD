@@ -6,9 +6,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import static com.parkingLot.observers.Users.OWNER;
-import static com.parkingLot.observers.Users.SECURITY;
 import static com.parkingLot.exceptions.ParkingLotException.ExceptionType.*;
+import static com.parkingLot.observers.Observers.OWNER;
+import static com.parkingLot.observers.Observers.SECURITY;
 
 public class ParkingLotTest {
     ParkingLot parkingLot;
@@ -31,16 +31,16 @@ public class ParkingLotTest {
     @Test
     public void givenCarObject_WhenParking_IfNotAvailableThrowsException() {
         try {
-            parkingLot.park(0,firstVehicle);
-            parkingLot.park(1,secondVehicle);
+            parkingLot.park(0, firstVehicle);
+            parkingLot.park(1, secondVehicle);
         } catch (ParkingLotException e) {
-            Assert.assertEquals(SPACE_NOT_AVAILABLE, e.type);
+            Assert.assertEquals(LOT_FULL, e.type);
         }
     }
 
     @Test
     public void givenParkedCarObject_WhenUnParked_IfSuccessReturnTrue() throws ParkingLotException {
-        parkingLot.park(0,firstVehicle);
+        parkingLot.park(0, firstVehicle);
         parkingLot.unPark(firstVehicle);
         Assert.assertFalse(parkingLot.parkStatue(firstVehicle));
     }
@@ -49,7 +49,7 @@ public class ParkingLotTest {
     public void givenSameVehicleTwice_WhenParked_ShouldThrowException() {
         try {
             parkingLot.park(0, firstVehicle);
-            parkingLot.park(1,firstVehicle);
+            parkingLot.park(1, firstVehicle);
         } catch (ParkingLotException e) {
             Assert.assertEquals(CAR_ALREADY_PARKED, e.type);
         }
@@ -58,7 +58,7 @@ public class ParkingLotTest {
     @Test
     public void givenParkedCar_WhenAttemptedToUnParkFor2Times_ShouldThrowException() {
         try {
-            parkingLot.park(1,firstVehicle);
+            parkingLot.park(1, firstVehicle);
             parkingLot.unPark(secondVehicle);
         } catch (ParkingLotException e) {
             Assert.assertEquals(NO_SUCH_VEHICLE, e.type);
@@ -76,21 +76,21 @@ public class ParkingLotTest {
 
     @Test
     public void putLotFullSign_WhenParkingLotFull_ReturnsTrue() throws ParkingLotException {
-        parkingLot.park(0,firstVehicle);
-        parkingLot.park(1,secondVehicle);
+        parkingLot.park(0, firstVehicle);
+        parkingLot.park(1, secondVehicle);
         Assert.assertTrue(OWNER.status);
     }
 
     @Test
     public void redirectSecurity_WhenParkingLotFull_ReturnsTrue() throws ParkingLotException {
-        parkingLot.park(0,firstVehicle);
-        parkingLot.park(1,secondVehicle);
+        parkingLot.park(0, firstVehicle);
+        parkingLot.park(1, secondVehicle);
         Assert.assertTrue(SECURITY.status);
     }
 
     @Test
     public void putLotFullSign_WhenParkingLotHasSpace_ReturnsFalse() throws ParkingLotException {
-        parkingLot.park(0,firstVehicle);
+        parkingLot.park(0, firstVehicle);
         parkingLot.unPark(firstVehicle);
         Assert.assertFalse(OWNER.status);
     }
@@ -100,7 +100,7 @@ public class ParkingLotTest {
         try {
             parkingLot.park(3, firstVehicle);
         } catch (ParkingLotException e) {
-            Assert.assertEquals(LOT_NOT_AVAILABLE, e.type);
+            Assert.assertEquals(SPACE_OCCUPIED, e.type);
         }
     }
 
@@ -110,7 +110,7 @@ public class ParkingLotTest {
             parkingLot.park(0, firstVehicle);
             parkingLot.park(0, secondVehicle);
         } catch (ParkingLotException e) {
-            Assert.assertEquals(LOT_NOT_AVAILABLE, e.type);
+            Assert.assertEquals(SPACE_OCCUPIED, e.type);
         }
     }
 
@@ -124,10 +124,9 @@ public class ParkingLotTest {
     @Test
     public void givenNotParkedCar_WhenSearchedForLocation_ShouldThrowException() {
         try {
-            int vehicleLocation = parkingLot.getCarLocation(firstVehicle);
+            parkingLot.getCarLocation(firstVehicle);
         } catch (ParkingLotException e) {
             Assert.assertEquals(NO_SUCH_VEHICLE, e.type);
         }
-
     }
 }

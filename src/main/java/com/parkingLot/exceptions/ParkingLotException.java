@@ -2,12 +2,12 @@ package com.parkingLot.exceptions;
 
 public class ParkingLotException extends Throwable {
     public enum ExceptionType {
-        SPACE_NOT_AVAILABLE("Parking space is not available!"),
+        LOT_FULL("Parking space is not available!"),
         NO_SUCH_VEHICLE("Given vehicle is not present!"),
         PARK_SPACE_EMPTY("No vehicles at parking!"),
         INVALID_VEHICLE("Vehicle must not be null!"),
         CAR_ALREADY_PARKED("Car already parked in lot!"),
-        LOT_NOT_AVAILABLE("Lot is already taken or not available!");
+        SPACE_OCCUPIED("Lot is already taken or not available!");
 
         String message;
 

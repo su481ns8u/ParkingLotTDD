@@ -1,11 +1,11 @@
 package com.parkingLot.observers;
 
-public enum Users {
+public enum Observers {
     OWNER(false), SECURITY(false);
 
     public boolean status;
 
-    Users(Boolean status) {
+    Observers(Boolean status) {
         this.status = status;
     }
 }
