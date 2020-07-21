@@ -6,6 +6,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import static com.parkingLot.enums.Users.OWNER;
+import static com.parkingLot.enums.Users.SECURITY;
 import static com.parkingLot.exceptions.ParkingLotException.ExceptionType.*;
 
 public class ParkingLotTest {
@@ -82,7 +84,7 @@ public class ParkingLotTest {
         parkingLot.park(car1);
         Object car2 = new Object();
         parkingLot.park(car2);
-        Assert.assertTrue(parkingLot.fullSignStatus());
+        Assert.assertTrue(OWNER.status);
     }
 
     @Test
@@ -91,7 +93,7 @@ public class ParkingLotTest {
         parkingLot.park(car1);
         Object car2 = new Object();
         parkingLot.park(car2);
-        Assert.assertTrue(parkingLot.securityStatus());
+        Assert.assertTrue(SECURITY.status);
     }
 
     @Test
@@ -99,6 +101,6 @@ public class ParkingLotTest {
         Object car1 = new Object();
         parkingLot.park(car1);
         parkingLot.unPark(car1);
-        Assert.assertFalse(parkingLot.fullSignStatus());
+        Assert.assertFalse(OWNER.status);
     }
 }

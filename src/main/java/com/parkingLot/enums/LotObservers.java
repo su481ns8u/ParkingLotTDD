@@ -13,6 +13,6 @@ public class LotObservers {
     }
 
     public void informLotFullStatus(boolean isFull) {
-            observers.forEach(observers -> observers.status = isFull);
+        observers.forEach(observers -> observers.status = isFull);
     }
 }
