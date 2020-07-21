@@ -88,21 +88,21 @@ public class ParkingLotTest {
     public void putLotFullSign_WhenParkingLotFull_ReturnsTrue() throws ParkingLotException {
         parkingLot.park(0, firstVehicle);
         parkingLot.park(1, secondVehicle);
-        Assert.assertTrue(OWNER.status);
+        Assert.assertTrue(OWNER.getStatus());
     }
 
     @Test
     public void redirectSecurity_WhenParkingLotFull_ReturnsTrue() throws ParkingLotException {
         parkingLot.park(0, firstVehicle);
         parkingLot.park(1, secondVehicle);
-        Assert.assertTrue(SECURITY.status);
+        Assert.assertTrue(SECURITY.getStatus());
     }
 
     @Test
     public void putLotFullSign_WhenParkingLotHasSpace_ReturnsFalse() throws ParkingLotException {
         parkingLot.park(0, firstVehicle);
         parkingLot.unPark(firstVehicle);
-        Assert.assertFalse(OWNER.status);
+        Assert.assertFalse(OWNER.getStatus());
     }
 
     @Test

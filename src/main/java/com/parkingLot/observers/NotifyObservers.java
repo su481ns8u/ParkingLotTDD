@@ -21,6 +21,6 @@ public class NotifyObservers {
      * @param isFull is current status of lot
      */
     public void informLotFullStatus(boolean isFull) {
-        observers.forEach(observers -> observers.status = isFull);
+        observers.forEach(observers -> observers.setStatus(isFull));
     }
 }
