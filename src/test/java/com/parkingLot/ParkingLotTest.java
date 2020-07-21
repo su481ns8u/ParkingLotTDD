@@ -68,9 +68,19 @@ public class ParkingLotTest {
     @Test
     public void givenNotParkedCar_WhenAttemptToUnPark_ShouldThrowException() {
         try {
+            parkingLot.park(0, secondVehicle);
             parkingLot.unPark(firstVehicle);
         } catch (ParkingLotException e) {
             Assert.assertEquals(NO_SUCH_VEHICLE, e.type);
+        }
+    }
+
+    @Test
+    public void givenNotParkedCar_WhenAttemptToUnParkInEmptyLot_ShouldThrowException() {
+        try {
+            parkingLot.unPark(firstVehicle);
+        } catch (ParkingLotException e) {
+            Assert.assertEquals(PARK_SPACE_EMPTY, e.type);
         }
     }
 

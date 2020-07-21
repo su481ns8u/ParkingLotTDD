@@ -84,11 +84,14 @@ public class ParkingLot {
      *                             invalid vehicle
      */
     public void unPark(Object car) throws ParkingLotException {
-        if (vehicles.size() == 0) throw new ParkingLotException(PARK_SPACE_EMPTY);
+        if (vehicles.values()
+                .stream()
+                .distinct()
+                .limit(2)
+                .count() < 2) throw new ParkingLotException(PARK_SPACE_EMPTY);
         if (!vehicles.containsValue(car)) throw new ParkingLotException(NO_SUCH_VEHICLE);
         if (car == null) throw new ParkingLotException(INVALID_VEHICLE);
-        vehicles.entrySet()
-                .removeIf(entry -> car.equals(entry.getValue()));
+        vehicles.replace(this.getCarLocation(car), car, null);
         this.notifyObserver();
     }
 
