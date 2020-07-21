@@ -114,7 +114,6 @@ public class ParkingLotTest {
         }
     }
 
-
     @Test
     public void givenParkedCar_WhenSearchedForLocation_ShouldReturnIntLocation() throws ParkingLotException {
         parkingLot.park(1, firstVehicle);

@@ -1,12 +1,11 @@
 package com.parkingLot.services;
 
-import com.parkingLot.observers.LotObservers;
 import com.parkingLot.exceptions.ParkingLotException;
+import com.parkingLot.observers.LotObservers;
 
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import static com.parkingLot.exceptions.ParkingLotException.ExceptionType.*;
 
@@ -42,7 +41,8 @@ public class ParkingLot {
             return vehicles.keySet()
                     .stream()
                     .filter(key -> car.equals(vehicles.get(key)))
-                    .findFirst().get();
+                    .findFirst()
+                    .get();
         } catch (NoSuchElementException e) {
             throw new ParkingLotException(NO_SUCH_VEHICLE);
         }
