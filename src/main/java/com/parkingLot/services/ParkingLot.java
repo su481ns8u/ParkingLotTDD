@@ -6,6 +6,7 @@ import com.parkingLot.exceptions.ParkingLotException;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static com.parkingLot.exceptions.ParkingLotException.ExceptionType.*;
 
@@ -34,6 +35,17 @@ public class ParkingLot {
                 .filter(v -> Objects.equals(v.getValue(), null))
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
+    }
+
+    public int getCarLocation(Object car) throws ParkingLotException {
+        try {
+            return vehicles.keySet()
+                    .stream()
+                    .filter(key -> car.equals(vehicles.get(key)))
+                    .findFirst().get();
+        } catch (NoSuchElementException e) {
+            throw new ParkingLotException(NO_SUCH_VEHICLE);
+        }
     }
 
     public void unPark(Object car) throws ParkingLotException {

@@ -113,4 +113,22 @@ public class ParkingLotTest {
             Assert.assertEquals(LOT_NOT_AVAILABLE, e.type);
         }
     }
+
+
+    @Test
+    public void givenParkedCar_WhenSearchedForLocation_ShouldReturnIntLocation() throws ParkingLotException {
+        parkingLot.park(1, firstVehicle);
+        int vehicleLocation = parkingLot.getCarLocation(firstVehicle);
+        Assert.assertEquals(1, vehicleLocation);
+    }
+
+    @Test
+    public void givenNotParkedCar_WhenSearchedForLocation_ShouldThrowException() {
+        try {
+            int vehicleLocation = parkingLot.getCarLocation(firstVehicle);
+        } catch (ParkingLotException e) {
+            Assert.assertEquals(NO_SUCH_VEHICLE, e.type);
+        }
+
+    }
 }
