@@ -2,7 +2,9 @@ package com.parkingLot;
 
 import com.parkingLot.exceptions.ParkingLotException;
 import com.parkingLot.observers.AirportSecurity;
+import com.parkingLot.observers.Attendant;
 import com.parkingLot.observers.Owner;
+import com.parkingLot.observers.VehicleDriver;
 import com.parkingLot.services.ParkingLot;
 import org.junit.Assert;
 import org.junit.Before;
@@ -143,6 +145,16 @@ public class ParkingLotTest {
             attendant.park(owner.selectLot(parkingLot), firstVehicle, parkingLot);
             boolean isParked = parkingLot.parkStatue(firstVehicle);
             Assert.assertTrue(isParked);
+        } catch (ParkingLotException e) {}
+    }
+
+    @Test
+    public void givenVehicleObject_ByDriverToParkingLot_ShouldReturnParkPosition() {
+        VehicleDriver vehicleDriver = new VehicleDriver();
+        try {
+            parkingLot.park(1, firstVehicle);
+            int location = vehicleDriver.findVehicle(firstVehicle, parkingLot);
+            Assert.assertEquals(1, location);
         } catch (ParkingLotException e) {}
     }
 }

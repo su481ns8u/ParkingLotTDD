@@ -1,4 +1,4 @@
-package com.parkingLot;
+package com.parkingLot.observers;
 
 import com.parkingLot.exceptions.ParkingLotException;
 import com.parkingLot.services.ParkingLot;
