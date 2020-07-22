@@ -1,7 +1,7 @@
 package com.parkingLot.services;
 
+import com.parkingLot.observers.ParkingLotObserver;
 import com.parkingLot.exceptions.ParkingLotException;
-import com.parkingLot.observers.NotifyObservers;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -10,8 +10,8 @@ import java.util.stream.IntStream;
 import static com.parkingLot.exceptions.ParkingLotException.ExceptionType.*;
 
 public class ParkingLot {
-    private final NotifyObservers notify;
     private final HashMap<Integer, Object> vehicles;
+    private List<ParkingLotObserver> parkingLotObserver;
 
     /**
      * Constructor to initialize parking lot
@@ -20,7 +20,7 @@ public class ParkingLot {
      * @param lotSize size of parking lot
      */
     public ParkingLot(int lotSize) {
-        notify = new NotifyObservers();
+        this.parkingLotObserver = new ArrayList<>();
         vehicles = new HashMap<>();
         IntStream.range(0, lotSize).forEach(i -> vehicles.put(i, null));
     }
@@ -109,7 +109,11 @@ public class ParkingLot {
      * Notify observers when space is available or full
      */
     private void notifyObserver() {
-        if (vehicles.containsValue(null)) notify.informLotFullStatus(false);
-        if (!vehicles.containsValue(null)) notify.informLotFullStatus(true);
+        if (vehicles.containsValue(null)) parkingLotObserver.forEach(observer -> observer.isCapacityFull(false));
+        if (!vehicles.containsValue(null)) parkingLotObserver.forEach(observer -> observer.isCapacityFull(true));
+    }
+
+    public void registerObserver(ParkingLotObserver parkingLotObserver) {
+        this.parkingLotObserver.add(parkingLotObserver);
     }
 }

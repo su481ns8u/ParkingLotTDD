@@ -1,14 +1,14 @@
 package com.parkingLot;
 
 import com.parkingLot.exceptions.ParkingLotException;
+import com.parkingLot.observers.AirportSecurity;
+import com.parkingLot.observers.Owner;
 import com.parkingLot.services.ParkingLot;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import static com.parkingLot.exceptions.ParkingLotException.ExceptionType.*;
-import static com.parkingLot.observers.Observers.OWNER;
-import static com.parkingLot.observers.Observers.SECURITY;
 
 public class ParkingLotTest {
     ParkingLot parkingLot;
@@ -23,8 +23,10 @@ public class ParkingLotTest {
     }
 
     @Test
-    public void givenACarObject_WhenParking_IfAvailableReturnsTrue() throws ParkingLotException {
-        parkingLot.park(0, firstVehicle);
+    public void givenACarObject_WhenParking_IfAvailableReturnsTrue() {
+        try {
+            parkingLot.park(0, firstVehicle);
+        } catch (ParkingLotException e) {}
         Assert.assertTrue(parkingLot.parkStatue(firstVehicle));
     }
 
@@ -39,9 +41,11 @@ public class ParkingLotTest {
     }
 
     @Test
-    public void givenParkedCarObject_WhenUnParked_IfSuccessReturnTrue() throws ParkingLotException {
-        parkingLot.park(0, firstVehicle);
-        parkingLot.unPark(firstVehicle);
+    public void givenParkedCarObject_WhenUnParked_IfSuccessReturnTrue() {
+        try {
+            parkingLot.park(0, firstVehicle);
+            parkingLot.unPark(firstVehicle);
+        } catch (ParkingLotException e) {}
         Assert.assertFalse(parkingLot.parkStatue(firstVehicle));
     }
 
@@ -85,26 +89,41 @@ public class ParkingLotTest {
     }
 
     @Test
-    public void putLotFullSign_WhenParkingLotFull_ReturnsTrue() throws ParkingLotException {
-        parkingLot.park(0, firstVehicle);
-        parkingLot.park(1, secondVehicle);
-        Assert.assertTrue(OWNER.getStatus());
+    public void givenWhenParkingLotIsFull_ShouldInformOwner() {
+        Owner owner = new Owner();
+        parkingLot.registerObserver(owner);
+        try {
+            parkingLot.park(0, firstVehicle);
+            parkingLot.park(1, secondVehicle);
+        } catch (ParkingLotException e) {}
+        boolean capacityFull = owner.capacityFullStatus();
+        Assert.assertTrue(capacityFull);
     }
 
     @Test
-    public void redirectSecurity_WhenParkingLotFull_ReturnsTrue() throws ParkingLotException {
-        parkingLot.park(0, firstVehicle);
-        parkingLot.park(1, secondVehicle);
-        Assert.assertTrue(SECURITY.getStatus());
+    public void givenWhenParkingLotIsFull_ShouldInformAirPortSecurity() {
+        AirportSecurity airportSecurity = new AirportSecurity();
+        parkingLot.registerObserver(airportSecurity);
+        try {
+            parkingLot.park(0, firstVehicle);
+            parkingLot.park(1, secondVehicle);
+        } catch (ParkingLotException e) {}
+        boolean capacityFull = airportSecurity.capacityFullStatus();
+        Assert.assertTrue(capacityFull);
     }
 
     @Test
-    public void putLotFullSign_WhenParkingLotHasSpace_ReturnsFalse() throws ParkingLotException {
-        parkingLot.park(0, firstVehicle);
-        parkingLot.unPark(firstVehicle);
-        Assert.assertFalse(OWNER.getStatus());
+    public void givenWhenParkingLotSpaceIsAvailableAfterFull_ShouldReturnTrue() {
+        Owner owner = new Owner();
+        parkingLot.registerObserver(owner);
+        try {
+            parkingLot.park(0, firstVehicle);
+            parkingLot.park(1, secondVehicle);
+            parkingLot.unPark(firstVehicle);
+            boolean capacityFull1 = owner.capacityFullStatus();
+            Assert.assertFalse(capacityFull1);
+        } catch (ParkingLotException e) {}
     }
-
     @Test
     public void givenVehicleToPark_ifLotNotExists_ThrowsException() {
         try {
