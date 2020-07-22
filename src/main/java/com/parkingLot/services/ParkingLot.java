@@ -1,16 +1,22 @@
 package com.parkingLot.services;
 
+import com.parkingLot.models.Vehicle;
 import com.parkingLot.observers.ParkingLotObserver;
 import com.parkingLot.exceptions.ParkingLotException;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static com.parkingLot.exceptions.ParkingLotException.ExceptionType.*;
+import static java.time.LocalDateTime.*;
 
 public class ParkingLot {
-    private final HashMap<Integer, Object> vehicles;
+    private static final int FARE_PER_SECOND = 10;
+    private final HashMap<Integer, Vehicle> vehicles;
     private final List<ParkingLotObserver> parkingLotObserver;
 
     /**
@@ -29,18 +35,18 @@ public class ParkingLot {
      * Park vehicle by lot number and car object
      *
      * @param lotNum lot number of place to park
-     * @param car    object of vehicle
+     * @param vehicle    object of vehicle
      * @throws ParkingLotException if given car is already parked,
      *                             if vehicle is invalid,
      *                             space is already occupied,
      *                             parking lot is full
      */
-    public void park(int lotNum, Object car) throws ParkingLotException {
-        if (vehicles.containsValue(car)) throw new ParkingLotException(CAR_ALREADY_PARKED);
-        if (car == null) throw new ParkingLotException(INVALID_VEHICLE);
+    public void park(int lotNum, Vehicle vehicle) throws ParkingLotException {
+        if (vehicles.containsValue(vehicle)) throw new ParkingLotException(CAR_ALREADY_PARKED);
+        if (vehicle == null) throw new ParkingLotException(INVALID_VEHICLE);
         if (!this.getEmptyLots().contains(lotNum)) throw new ParkingLotException(SPACE_OCCUPIED);
         if (!vehicles.containsValue(null)) throw new ParkingLotException(LOT_FULL);
-        vehicles.put(lotNum, car);
+        vehicles.put(lotNum, vehicle);
         this.notifyObserver();
     }
 
@@ -60,15 +66,15 @@ public class ParkingLot {
     /**
      * Gives driver the location of vehicle
      *
-     * @param car Vehicle to find location
+     * @param vehicle Vehicle to find location
      * @return location of vehicle
      * @throws ParkingLotException if vehicle not exists
      */
-    public int getCarLocation(Object car) throws ParkingLotException {
+    public int getCarLocation(Vehicle vehicle) throws ParkingLotException {
         try {
             return vehicles.keySet()
                     .stream()
-                    .filter(key -> car.equals(vehicles.get(key)))
+                    .filter(key -> vehicle.equals(vehicles.get(key)))
                     .findFirst()
                     .get();
         } catch (NoSuchElementException e) {
@@ -79,30 +85,33 @@ public class ParkingLot {
     /**
      * Un-park car
      *
-     * @param car is object of vehicle tobe un-parked
+     * @param vehicle is object of vehicle tobe un-parked
      * @throws ParkingLotException if No vehicles in park space,
      *                             invalid vehicle
      */
-    public void unPark(Object car) throws ParkingLotException {
+    public long unPark(Vehicle vehicle) throws ParkingLotException {
         if (vehicles.values()
                 .stream()
                 .distinct()
                 .limit(2)
                 .count() < 2) throw new ParkingLotException(PARK_SPACE_EMPTY);
-        if (!vehicles.containsValue(car)) throw new ParkingLotException(NO_SUCH_VEHICLE);
-        if (car == null) throw new ParkingLotException(INVALID_VEHICLE);
-        vehicles.replace(this.getCarLocation(car), car, null);
+        if (!vehicles.containsValue(vehicle)) throw new ParkingLotException(NO_SUCH_VEHICLE);
+        if (vehicle == null) throw new ParkingLotException(INVALID_VEHICLE);
+        vehicles.replace(this.getCarLocation(vehicle), vehicle, null);
+        Duration duration = Duration.between(vehicle.getParkTime(), LocalDateTime.now());
+        long seconds = duration.getSeconds();
         this.notifyObserver();
+        return seconds * FARE_PER_SECOND;
     }
 
     /**
      * Check the parking status of vehicle
      *
-     * @param car is object of vehicle tobe checked
+     * @param vehicle is object of vehicle tobe checked
      * @return vehicle parked or not
      */
-    public boolean parkStatue(Object car) {
-        return vehicles.containsValue(car);
+    public boolean parkStatue(Vehicle vehicle) {
+        return vehicles.containsValue(vehicle);
     }
 
     /**

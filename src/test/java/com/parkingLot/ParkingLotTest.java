@@ -1,6 +1,7 @@
 package com.parkingLot;
 
 import com.parkingLot.exceptions.ParkingLotException;
+import com.parkingLot.models.Vehicle;
 import com.parkingLot.observers.AirportSecurity;
 import com.parkingLot.observers.Attendant;
 import com.parkingLot.observers.Owner;
@@ -10,18 +11,21 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import static com.parkingLot.exceptions.ParkingLotException.ExceptionType.*;
 
 public class ParkingLotTest {
     ParkingLot parkingLot;
-    Object firstVehicle;
-    Object secondVehicle;
+    Vehicle firstVehicle;
+    Vehicle secondVehicle;
 
     @Before
     public void setUp() {
         parkingLot = new ParkingLot(2);
-        firstVehicle = "car1";
-        secondVehicle = "car2";
+        firstVehicle = new Vehicle(LocalDateTime.now(),"car1");
+        secondVehicle = new Vehicle(LocalDateTime.now(), "car2");
     }
 
     @Test
@@ -156,5 +160,15 @@ public class ParkingLotTest {
             int location = vehicleDriver.findVehicle(firstVehicle, parkingLot);
             Assert.assertEquals(1, location);
         } catch (ParkingLotException e) {}
+    }
+
+    @Test
+    public void givenParkedVehicle_WhenUnParked_ShouldReturnFare() {
+        try {
+            parkingLot.park(1, firstVehicle);
+            Thread.sleep(2000);
+            long fare = parkingLot.unPark(firstVehicle);
+            Assert.assertEquals(20, fare);
+        } catch (ParkingLotException | InterruptedException e) {}
     }
 }
