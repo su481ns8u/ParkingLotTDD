@@ -11,7 +11,7 @@ import static com.parkingLot.exceptions.ParkingLotException.ExceptionType.*;
 
 public class ParkingLot {
     private final HashMap<Integer, Object> vehicles;
-    private List<ParkingLotObserver> parkingLotObserver;
+    private final List<ParkingLotObserver> parkingLotObserver;
 
     /**
      * Constructor to initialize parking lot
@@ -108,7 +108,7 @@ public class ParkingLot {
     /**
      * Notify observers when space is available or full
      */
-    private void notifyObserver() {
+    public void notifyObserver() {
         if (vehicles.containsValue(null)) parkingLotObserver.forEach(observer -> observer.isCapacityFull(false));
         if (!vehicles.containsValue(null)) parkingLotObserver.forEach(observer -> observer.isCapacityFull(true));
     }

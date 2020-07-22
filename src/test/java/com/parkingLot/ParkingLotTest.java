@@ -80,6 +80,15 @@ public class ParkingLotTest {
     }
 
     @Test
+    public void givenNotParkedCar_WhenSearchedForLocation_ShouldThrowException() {
+        try {
+            parkingLot.getCarLocation(firstVehicle);
+        } catch (ParkingLotException e) {
+            Assert.assertEquals(NO_SUCH_VEHICLE, e.type);
+        }
+    }
+
+    @Test
     public void givenNotParkedCar_WhenAttemptToUnParkInEmptyLot_ShouldThrowException() {
         try {
             parkingLot.unPark(firstVehicle);
@@ -124,38 +133,16 @@ public class ParkingLotTest {
             Assert.assertFalse(capacityFull1);
         } catch (ParkingLotException e) {}
     }
-    @Test
-    public void givenVehicleToPark_ifLotNotExists_ThrowsException() {
-        try {
-            parkingLot.park(3, firstVehicle);
-        } catch (ParkingLotException e) {
-            Assert.assertEquals(SPACE_OCCUPIED, e.type);
-        }
-    }
 
     @Test
-    public void givenVehicleToPark_ifLotAlreadyTaken_ThrowsException() {
+    public void givenCarToParkToAttendant_SelectLocationByOwner_ShouldPark() {
+        Owner owner = new Owner();
+        parkingLot.registerObserver(owner);
+        Attendant attendant = new Attendant();
         try {
-            parkingLot.park(0, firstVehicle);
-            parkingLot.park(0, secondVehicle);
-        } catch (ParkingLotException e) {
-            Assert.assertEquals(SPACE_OCCUPIED, e.type);
-        }
-    }
-
-    @Test
-    public void givenParkedCar_WhenSearchedForLocation_ShouldReturnIntLocation() throws ParkingLotException {
-        parkingLot.park(1, firstVehicle);
-        int vehicleLocation = parkingLot.getCarLocation(firstVehicle);
-        Assert.assertEquals(1, vehicleLocation);
-    }
-
-    @Test
-    public void givenNotParkedCar_WhenSearchedForLocation_ShouldThrowException() {
-        try {
-            parkingLot.getCarLocation(firstVehicle);
-        } catch (ParkingLotException e) {
-            Assert.assertEquals(NO_SUCH_VEHICLE, e.type);
-        }
+            attendant.park(owner.selectLot(parkingLot), firstVehicle, parkingLot);
+            boolean isParked = parkingLot.parkStatue(firstVehicle);
+            Assert.assertTrue(isParked);
+        } catch (ParkingLotException e) {}
     }
 }
