@@ -31,6 +31,11 @@ public class ParkingLot {
         IntStream.range(0, lotSize).forEach(i -> vehicles.put(i, null));
     }
 
+
+    public void registerObserver(ParkingLotObserver parkingLotObserver) {
+        this.parkingLotObserver.add(parkingLotObserver);
+    }
+
     /**
      * Park vehicle by lot number and car object
      *
@@ -120,9 +125,5 @@ public class ParkingLot {
     public void notifyObserver() {
         if (vehicles.containsValue(null)) parkingLotObserver.forEach(observer -> observer.isCapacityFull(false));
         if (!vehicles.containsValue(null)) parkingLotObserver.forEach(observer -> observer.isCapacityFull(true));
-    }
-
-    public void registerObserver(ParkingLotObserver parkingLotObserver) {
-        this.parkingLotObserver.add(parkingLotObserver);
     }
 }

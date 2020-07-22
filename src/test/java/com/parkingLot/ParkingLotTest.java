@@ -11,8 +11,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.sql.Driver;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 import static com.parkingLot.exceptions.ParkingLotException.ExceptionType.*;
 
@@ -146,7 +146,7 @@ public class ParkingLotTest {
         parkingLot.registerObserver(owner);
         Attendant attendant = new Attendant();
         try {
-            attendant.park(owner.selectLot(parkingLot), firstVehicle, parkingLot);
+            attendant.park(owner.selectPosition(parkingLot), firstVehicle, parkingLot);
             boolean isParked = parkingLot.parkStatue(firstVehicle);
             Assert.assertTrue(isParked);
         } catch (ParkingLotException e) {}
@@ -170,5 +170,26 @@ public class ParkingLotTest {
             long fare = parkingLot.unPark(firstVehicle);
             Assert.assertEquals(20, fare);
         } catch (ParkingLotException | InterruptedException e) {}
+    }
+
+    @Test
+    public void demoTest() {
+        Owner owner = new Owner();
+        VehicleDriver driver = new VehicleDriver();
+        parkingLot.registerObserver(owner);
+        ParkingLot parkingLot1 = new ParkingLot(2);
+        parkingLot1.registerObserver(owner);
+        Attendant attendant = new Attendant();
+        try {
+            attendant.park(owner.selectPosition(owner.selectLot(parkingLot1, parkingLot)),
+                    firstVehicle,
+                    owner.selectLot(parkingLot1, parkingLot));
+            attendant.park(owner.selectPosition(owner.selectLot(parkingLot1, parkingLot)),
+                    secondVehicle,
+                    owner.selectLot(parkingLot1, parkingLot));
+            int location2 = driver.findVehicle(secondVehicle, parkingLot);
+
+            Assert.assertEquals(0, location2);
+        } catch (ParkingLotException e) { }
     }
 }
