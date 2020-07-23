@@ -204,4 +204,14 @@ public class ParkingLotTest {
             e.printStackTrace();
         }
     }
+
+    @Test
+    public void givenVehicleToParkInMultipleLots_IfNoLotExists_ThenThrowsException() {
+        Owner owner = new Owner();
+        try {
+            owner.informAttendantAndPark(firstVehicle);
+        } catch (ParkingLotException e) {
+            Assert.assertEquals(NO_PARKING_LOT_ASSIGNED, e.type);
+        }
+    }
 }

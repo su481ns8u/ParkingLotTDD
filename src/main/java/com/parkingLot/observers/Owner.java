@@ -8,6 +8,8 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
+import static com.parkingLot.exceptions.ParkingLotException.ExceptionType.NO_PARKING_LOT_ASSIGNED;
+
 public class Owner implements ParkingLotObserver {
     private boolean isFull;
     Attendant attendant;
@@ -38,7 +40,8 @@ public class Owner implements ParkingLotObserver {
         return emptyLots.get(0);
     }
 
-    public int selectParkSpace() {
+    public int selectParkSpace() throws ParkingLotException {
+        if (parkingLotList.size() == 0) throw new ParkingLotException(NO_PARKING_LOT_ASSIGNED);
         parkingLotList.sort(Comparator
                 .comparing(list -> list
                         .getEmptyLots().size(), Comparator.reverseOrder()));

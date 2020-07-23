@@ -49,8 +49,7 @@ public class ParkingLot {
                     .stream()
                     .filter(v -> v.equals(vehicle))
                     .map(vehicleList::indexOf)
-                    .findFirst()
-                    .get();
+                    .findFirst().get();
         } catch (NoSuchElementException | NullPointerException e) {
             throw new ParkingLotException(NO_SUCH_VEHICLE);
         }

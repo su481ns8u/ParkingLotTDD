@@ -7,7 +7,8 @@ public class ParkingLotException extends Throwable {
         PARK_SPACE_EMPTY("No vehicles at parking!"),
         INVALID_VEHICLE("Vehicle must not be null!"),
         CAR_ALREADY_PARKED("Car already parked in lot!"),
-        SPACE_OCCUPIED("Lot is already taken or not available!");
+        SPACE_OCCUPIED("Lot is already taken or not available!"),
+        NO_PARKING_LOT_ASSIGNED("No parking lot is assigned to owner!");
 
         String message;
 
