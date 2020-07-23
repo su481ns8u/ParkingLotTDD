@@ -1,17 +1,27 @@
 package com.parkingLot.observers;
 
+import com.parkingLot.exceptions.ParkingLotException;
+import com.parkingLot.models.ParkedVehicle;
 import com.parkingLot.services.ParkingLot;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
 
 public class Owner implements ParkingLotObserver {
     private boolean isFull;
-//    Map<Integer, ParkingLot> parkLotMap;
+    Attendant attendant;
+    private final List<ParkingLot> parkingLotList;
+    ParkingLot currentActiveLot;
 
-//    public Owner() {
-//        parkLotMap = new LinkedHashMap<>();
-//        IntStream.range(0, 2).forEach(parkLot -> parkLotMap.put(parkLot, new ParkingLot(2)));
-//    }
+    public Owner() {
+        attendant = new Attendant();
+        parkingLotList = new LinkedList<>();
+    }
+
+    public void addLot(ParkingLot parkingLot) {
+        this.parkingLotList.add(parkingLot);
+    }
 
     @Override
     public void isCapacityFull(boolean isFull) {
@@ -23,25 +33,26 @@ public class Owner implements ParkingLotObserver {
         return this.isFull;
     }
 
-    public int selectPosition(ParkingLot parkingLot) {
+    public int selectParkSpace(ParkingLot parkingLot) {
         List<Integer> emptyLots = parkingLot.getEmptyLots();
-        return emptyLots.get(new Random().nextInt(emptyLots.size()));
+        return emptyLots.get(0);
     }
 
-    public int selectLot(ParkingLot... parkingLots) {
-        Map<Integer, ParkingLot> lotMap = new TreeMap<>();
-        Arrays.asList(parkingLots)
-                .forEach(parkingLot -> lotMap
-                        .put(parkingLot
-                                .getEmptyLots()
-                                .get(0), parkingLot
-                        ));
-        return lotMap.get(lotMap.keySet().toArray()[0]);
-//        ParkingLot currentLot = parkLotMap.get(0);
-//        for (ParkingLot parkingLot : parkLotMap.values()) {
-//            if (parkingLot.getEmptyLots().get(0) <= currentLot.getEmptyLots().get(0))
-//                currentLot = parkingLot;
-//        }
-//        return currentLot;
+    public int selectParkSpace() {
+        parkingLotList.sort(Comparator
+                .comparing(list -> list
+                        .getEmptyLots().size(), Comparator.reverseOrder()));
+        this.currentActiveLot = parkingLotList.get(0);
+        return currentActiveLot.getEmptyLots().get(0);
+    }
+
+    public void informAttendantAndPark(ParkedVehicle vehicle, ParkingLot parkingLot) throws ParkingLotException {
+        int selectedSpace = this.selectParkSpace(parkingLot);
+        attendant.park(selectedSpace, vehicle, parkingLot);
+    }
+
+    public void informAttendantAndPark(ParkedVehicle vehicle) throws ParkingLotException {
+        int selectedSpace = this.selectParkSpace();
+        attendant.park(selectedSpace, vehicle, currentActiveLot);
     }
 }

@@ -148,9 +148,8 @@ public class ParkingLotTest {
     public void givenCarToParkToAttendant_SelectLocationByOwner_ShouldPark() {
         Owner owner = new Owner();
         parkingLot.registerObserver(owner);
-        Attendant attendant = new Attendant();
         try {
-            attendant.park(owner.selectLot(parkingLot), firstVehicle, parkingLot);
+            owner.informAttendantAndPark(firstVehicle, parkingLot);
             boolean isParked = parkingLot.parkStatue(firstVehicle);
             Assert.assertTrue(isParked);
         } catch (ParkingLotException ignored) {
@@ -185,6 +184,24 @@ public class ParkingLotTest {
             firstVehicle.getParkTime();
         } catch (ParkingLotException e) {
             Assert.assertEquals(NO_SUCH_VEHICLE, e.type);
+        }
+    }
+
+    @Test
+    public void givenMultipleParkingLots_WhenVehiclesParkedEvenly_ShouldReturnTrue() {
+        ParkingLot parkingLot1 = new ParkingLot(2);
+        Owner owner = new Owner();
+        owner.addLot(parkingLot1);
+        owner.addLot(parkingLot);
+        try {
+            owner.informAttendantAndPark(firstVehicle);
+            owner.informAttendantAndPark(secondVehicle);
+            int emptyLotsInFirst = parkingLot.getEmptyLots().get(0);
+            int emptyLotsInSecond = parkingLot1.getEmptyLots().get(0);
+            //noinspection SimplifiableJUnitAssertion
+            Assert.assertTrue(emptyLotsInFirst == emptyLotsInSecond);
+        } catch (ParkingLotException e) {
+            e.printStackTrace();
         }
     }
 }
