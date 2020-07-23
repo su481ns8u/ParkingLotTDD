@@ -3,6 +3,7 @@ package com.parkingLot.services;
 import com.parkingLot.exceptions.ParkingLotException;
 import com.parkingLot.models.ParkedVehicle;
 import com.parkingLot.observers.ParkingLotObserver;
+import com.parkingLot.observers.VehicleDriver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,7 @@ public class ParkingLot {
         this.parkingLotObserver.add(parkingLotObserver);
     }
 
-    public void park(int lotNum, ParkedVehicle vehicle) throws ParkingLotException {
+    public void park(int lotNum, ParkedVehicle vehicle, VehicleDriver.DriverType... driverType) throws ParkingLotException {
         if (vehicle == null) throw new ParkingLotException(INVALID_VEHICLE);
         if (vehicleList.contains(vehicle)) throw new ParkingLotException(CAR_ALREADY_PARKED);
         if (!vehicleList.contains(null)) throw new ParkingLotException(LOT_FULL);
@@ -49,7 +50,8 @@ public class ParkingLot {
                     .stream()
                     .filter(v -> v.equals(vehicle))
                     .map(vehicleList::indexOf)
-                    .findFirst().get();
+                    .findFirst()
+                    .get();
         } catch (NoSuchElementException | NullPointerException e) {
             throw new ParkingLotException(NO_SUCH_VEHICLE);
         }

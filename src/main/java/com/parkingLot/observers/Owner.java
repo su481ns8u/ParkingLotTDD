@@ -35,7 +35,7 @@ public class Owner implements ParkingLotObserver {
         return this.isFull;
     }
 
-    public int selectParkSpace(ParkingLot parkingLot) {
+    public int selectParkSpace(ParkingLot parkingLot, VehicleDriver.DriverType driverType) {
         List<Integer> emptyLots = parkingLot.getEmptyLots();
         return emptyLots.get(0);
     }
@@ -49,8 +49,9 @@ public class Owner implements ParkingLotObserver {
         return currentActiveLot.getEmptyLots().get(0);
     }
 
-    public void informAttendantAndPark(ParkedVehicle vehicle, ParkingLot parkingLot) throws ParkingLotException {
-        int selectedSpace = this.selectParkSpace(parkingLot);
+    public void informAttendantAndPark(ParkedVehicle vehicle, ParkingLot parkingLot, VehicleDriver.DriverType... driverType)
+            throws ParkingLotException {
+        int selectedSpace = this.selectParkSpace(parkingLot, driverType[0]);
         attendant.park(selectedSpace, vehicle, parkingLot);
     }
 
