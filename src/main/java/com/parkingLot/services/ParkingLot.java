@@ -1,129 +1,75 @@
 package com.parkingLot.services;
 
-import com.parkingLot.models.Vehicle;
-import com.parkingLot.observers.ParkingLotObserver;
 import com.parkingLot.exceptions.ParkingLotException;
+import com.parkingLot.models.ParkedVehicle;
+import com.parkingLot.observers.ParkingLotObserver;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static com.parkingLot.exceptions.ParkingLotException.ExceptionType.*;
-import static java.time.LocalDateTime.*;
 
 public class ParkingLot {
-    private static final int FARE_PER_SECOND = 10;
-    private final HashMap<Integer, Vehicle> vehicles;
+    private final List<ParkedVehicle> vehicleList;
     private final List<ParkingLotObserver> parkingLotObserver;
 
-    /**
-     * Constructor to initialize parking lot
-     * Sets all lots to null
-     *
-     * @param lotSize size of parking lot
-     */
     public ParkingLot(int lotSize) {
         this.parkingLotObserver = new ArrayList<>();
-        vehicles = new HashMap<>();
-        IntStream.range(0, lotSize).forEach(i -> vehicles.put(i, null));
+        vehicleList = new ArrayList<>();
+        IntStream.range(0, lotSize).forEach(parkSpace -> vehicleList.add(null));
     }
-
 
     public void registerObserver(ParkingLotObserver parkingLotObserver) {
         this.parkingLotObserver.add(parkingLotObserver);
     }
 
-    /**
-     * Park vehicle by lot number and car object
-     *
-     * @param lotNum lot number of place to park
-     * @param vehicle    object of vehicle
-     * @throws ParkingLotException if given car is already parked,
-     *                             if vehicle is invalid,
-     *                             space is already occupied,
-     *                             parking lot is full
-     */
-    public void park(int lotNum, Vehicle vehicle) throws ParkingLotException {
-        if (vehicles.containsValue(vehicle)) throw new ParkingLotException(CAR_ALREADY_PARKED);
+    public void park(int lotNum, ParkedVehicle vehicle) throws ParkingLotException {
         if (vehicle == null) throw new ParkingLotException(INVALID_VEHICLE);
+        if (vehicleList.contains(vehicle)) throw new ParkingLotException(CAR_ALREADY_PARKED);
+        if (!vehicleList.contains(null)) throw new ParkingLotException(LOT_FULL);
         if (!this.getEmptyLots().contains(lotNum)) throw new ParkingLotException(SPACE_OCCUPIED);
-        if (!vehicles.containsValue(null)) throw new ParkingLotException(LOT_FULL);
-        vehicles.put(lotNum, vehicle);
+        vehicleList.set(lotNum, vehicle);
+        vehicle.setParkTime();
         this.notifyObserver();
     }
 
-    /**
-     * gets the list of empty lots
-     *
-     * @return list of lots with null values
-     */
     public List<Integer> getEmptyLots() {
-        return vehicles.entrySet()
-                .stream()
-                .filter(v -> Objects.equals(v.getValue(), null))
-                .map(Map.Entry::getKey)
+        return IntStream.range(0, vehicleList.size())
+                .filter(index -> vehicleList.get(index) == null)
+                .boxed()
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Gives driver the location of vehicle
-     *
-     * @param vehicle Vehicle to find location
-     * @return location of vehicle
-     * @throws ParkingLotException if vehicle not exists
-     */
-    public int getCarLocation(Vehicle vehicle) throws ParkingLotException {
+    public int getCarLocation(ParkedVehicle vehicle) throws ParkingLotException {
         try {
-            return vehicles.keySet()
+            return vehicleList
                     .stream()
-                    .filter(key -> vehicle.equals(vehicles.get(key)))
+                    .filter(v -> v.equals(vehicle))
+                    .map(vehicleList::indexOf)
                     .findFirst()
                     .get();
-        } catch (NoSuchElementException e) {
+        } catch (NoSuchElementException | NullPointerException e) {
             throw new ParkingLotException(NO_SUCH_VEHICLE);
         }
     }
 
-    /**
-     * Un-park car
-     *
-     * @param vehicle is object of vehicle tobe un-parked
-     * @throws ParkingLotException if No vehicles in park space,
-     *                             invalid vehicle
-     */
-    public long unPark(Vehicle vehicle) throws ParkingLotException {
-        if (vehicles.values()
-                .stream()
-                .distinct()
-                .limit(2)
-                .count() < 2) throw new ParkingLotException(PARK_SPACE_EMPTY);
-        if (!vehicles.containsValue(vehicle)) throw new ParkingLotException(NO_SUCH_VEHICLE);
+    public void unPark(ParkedVehicle vehicle) throws ParkingLotException {
+        if (vehicleList.stream().distinct().limit(2).count() < 2) throw new ParkingLotException(PARK_SPACE_EMPTY);
+        if (!vehicleList.contains(vehicle)) throw new ParkingLotException(NO_SUCH_VEHICLE);
         if (vehicle == null) throw new ParkingLotException(INVALID_VEHICLE);
-        vehicles.replace(this.getCarLocation(vehicle), vehicle, null);
-        Duration duration = Duration.between(vehicle.getParkTime(), LocalDateTime.now());
-        long seconds = duration.getSeconds();
+        vehicleList.set(vehicleList.indexOf(vehicle), null);
         this.notifyObserver();
-        return seconds * FARE_PER_SECOND;
     }
 
-    /**
-     * Check the parking status of vehicle
-     *
-     * @param vehicle is object of vehicle tobe checked
-     * @return vehicle parked or not
-     */
-    public boolean parkStatue(Vehicle vehicle) {
-        return vehicles.containsValue(vehicle);
+    public boolean parkStatue(ParkedVehicle vehicle) {
+        return vehicleList.contains(vehicle);
     }
 
-    /**
-     * Notify observers when space is available or full
-     */
     public void notifyObserver() {
-        if (vehicles.containsValue(null)) parkingLotObserver.forEach(observer -> observer.isCapacityFull(false));
-        if (!vehicles.containsValue(null)) parkingLotObserver.forEach(observer -> observer.isCapacityFull(true));
+        if (vehicleList.contains(null)) parkingLotObserver.forEach(observer -> observer.isCapacityFull(false));
+        if (!vehicleList.contains(null)) parkingLotObserver.forEach(observer -> observer.isCapacityFull(true));
     }
 }

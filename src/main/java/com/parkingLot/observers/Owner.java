@@ -28,7 +28,7 @@ public class Owner implements ParkingLotObserver {
         return emptyLots.get(new Random().nextInt(emptyLots.size()));
     }
 
-    public ParkingLot selectLot(ParkingLot... parkingLots) {
+    public int selectLot(ParkingLot... parkingLots) {
         Map<Integer, ParkingLot> lotMap = new TreeMap<>();
         Arrays.asList(parkingLots)
                 .forEach(parkingLot -> lotMap

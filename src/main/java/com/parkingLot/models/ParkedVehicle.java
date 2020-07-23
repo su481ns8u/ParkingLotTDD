@@ -1,18 +1,27 @@
 package com.parkingLot.models;
 
+import com.parkingLot.exceptions.ParkingLotException;
+
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-public class Vehicle {
+import static com.parkingLot.exceptions.ParkingLotException.ExceptionType.NO_SUCH_VEHICLE;
+
+public class ParkedVehicle {
     LocalDateTime parkTime;
     String name;
 
-    public Vehicle(LocalDateTime parkTime, String name) {
-        this.parkTime = parkTime;
+    public ParkedVehicle(String name) {
         this.name = name;
     }
 
-    public LocalDateTime getParkTime() {
+    public void setParkTime() {
+        this.parkTime = LocalDateTime.now();
+    }
+
+    public LocalDateTime getParkTime() throws ParkingLotException {
+        if (parkTime == null)
+            throw new ParkingLotException(NO_SUCH_VEHICLE);
         return parkTime;
     }
 
@@ -20,7 +29,7 @@ public class Vehicle {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Vehicle vehicle = (Vehicle) o;
+        ParkedVehicle vehicle = (ParkedVehicle) o;
         return Objects.equals(parkTime, vehicle.parkTime) &&
                 Objects.equals(name, vehicle.name);
     }
