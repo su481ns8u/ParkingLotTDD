@@ -4,28 +4,23 @@ import com.parkingLot.models.ParkingLot;
 
 import java.util.List;
 
-public enum DriverType implements ParkingType {
-    HANDICAP {
+import static com.parkingLot.enums.DriverType.NORMAL;
+
+public enum VehicleType implements ParkingType {
+    SMALL {
         public ParkingLot getLot(List<ParkingLot> lotList) {
-            ParkingLot currentLot = lotList.get(0);
-            int num = currentLot.getEmptySlots().get(0);
-            for (ParkingLot parkingLot : lotList)
-                if (parkingLot.getEmptySlots().get(0) < num) {
-                    currentLot = parkingLot;
-                    num = currentLot.getEmptySlots().get(0);
-                }
-            return currentLot;
+            return NORMAL.getLot(lotList);
         }
     },
 
-    NORMAL {
+    LARGE {
         public ParkingLot getLot(List<ParkingLot> lotList) {
-            int num = lotList.get(0).getEmptySlots().size();
             ParkingLot currentLot = lotList.get(0);
+            int num = currentLot.getEmptySlots().size();
             for (ParkingLot parkingLot : lotList)
                 if (parkingLot.getEmptySlots().size() > num) {
-                    num = parkingLot.getEmptySlots().size();
                     currentLot = parkingLot;
+                    num = currentLot.getEmptySlots().size();
                 }
             return currentLot;
         }

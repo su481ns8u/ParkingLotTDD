@@ -1,15 +1,16 @@
 package com.parkingLot.services;
 
-import com.parkingLot.enums.DriverType;
+import com.parkingLot.enums.ParkingType;
 import com.parkingLot.exceptions.ParkingLotException;
 import com.parkingLot.models.ParkSlot;
 import com.parkingLot.models.ParkingLot;
 import com.parkingLot.observers.ParkingLotObserver;
 
-import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
-import static com.parkingLot.enums.DriverType.HANDICAP;
 import static com.parkingLot.enums.DriverType.NORMAL;
 import static com.parkingLot.exceptions.ParkingLotException.ExceptionType.*;
 
@@ -33,18 +34,18 @@ public class ParkingLotService {
         observers.addAll(Arrays.asList(parkingLotObservers));
     }
 
-    public int getSlotToPark(DriverType driverType) {
-        currentLot = driverType.getLot(lotList);
+    public int getSlotToPark(ParkingType parkingType) {
+        currentLot = parkingType.getLot(lotList);
         currentSlotList = currentLot.getParkSlots();
         return currentLot.getEmptySlots().get(0);
     }
 
-    public void park(Object vehicle, DriverType... driverTypes) throws ParkingLotException {
+    public void park(Object vehicle, ParkingType... parkingTypes) throws ParkingLotException {
         if (vehicle == null) throw new ParkingLotException(INVALID_VEHICLE);
         if (this.parkStatus(vehicle)) throw new ParkingLotException(CAR_ALREADY_PARKED);
         if (areAllLotsFull()) throw new ParkingLotException(LOT_FULL);
-        int validSlot = 0;
-        if (driverTypes.length > 0 && driverTypes[0] == HANDICAP) validSlot = this.getSlotToPark(HANDICAP);
+        int validSlot;
+        if (parkingTypes.length == 1) validSlot = this.getSlotToPark(parkingTypes[0]);
         else validSlot = this.getSlotToPark(NORMAL);
         currentSlotList.set(validSlot, new ParkSlot(vehicle));
         currentLot.setParkSlots(currentSlotList);
@@ -95,7 +96,7 @@ public class ParkingLotService {
         throw new ParkingLotException(NO_SUCH_VEHICLE);
     }
 
-    public LocalDateTime getParkTime(Object vehicle) throws ParkingLotException {
+    public int getParkTime(Object vehicle) throws ParkingLotException {
         return lotList.stream()
                 .flatMap(parkingLot -> parkingLot.getParkSlots().stream())
                 .filter(Objects::nonNull)

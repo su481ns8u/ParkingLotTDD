@@ -3,8 +3,6 @@ package com.parkingLot.models;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static java.util.stream.IntStream.range;
 
@@ -35,10 +33,6 @@ public class ParkingLot {
             count++;
         }
         return emptyLotList;
-//        return IntStream.range(0, parkSlots.size())
-//                .filter(index -> parkSlots.get(index) == null)
-//                .boxed()
-//                .collect(Collectors.toList());
     }
 
     @Override

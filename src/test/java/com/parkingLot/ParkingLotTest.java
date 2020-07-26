@@ -1,6 +1,5 @@
 package com.parkingLot;
 
-import com.parkingLot.enums.DriverType;
 import com.parkingLot.exceptions.ParkingLotException;
 import com.parkingLot.models.ParkingLot;
 import com.parkingLot.observers.AirportSecurity;
@@ -14,6 +13,7 @@ import java.time.LocalDateTime;
 
 import static com.parkingLot.enums.DriverType.HANDICAP;
 import static com.parkingLot.enums.DriverType.NORMAL;
+import static com.parkingLot.enums.VehicleType.LARGE;
 import static com.parkingLot.exceptions.ParkingLotException.ExceptionType.*;
 
 public class ParkingLotTest {
@@ -176,8 +176,8 @@ public class ParkingLotTest {
     public void givenParkedVehicle_WhenTriedToGetParkTime_ShouldReturnParkTime() {
         try {
             parkingLotService.park(firstVehicle);
-            LocalDateTime currentTime = LocalDateTime.now();
-            LocalDateTime parkTime = parkingLotService.getParkTime(firstVehicle);
+            int currentTime = LocalDateTime.now().getSecond();
+            int parkTime = parkingLotService.getParkTime(firstVehicle);
             Assert.assertEquals(currentTime, parkTime);
         } catch (ParkingLotException ignored) {
         }
@@ -216,6 +216,16 @@ public class ParkingLotTest {
             Assert.assertEquals("A 0", parkingLotService.getVehicleLocation("car4"));
         } catch (ParkingLotException e) {
             e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void givenLargeVehicleToPark_ShouldPark_AtPositionWithMostFreeSpace() {
+        try {
+            parkingLotService.park(firstVehicle);
+            parkingLotService.park(secondVehicle, LARGE);
+            Assert.assertEquals("B 0", parkingLotService.getVehicleLocation(secondVehicle));
+        } catch (ParkingLotException ignored) {
         }
     }
 }
