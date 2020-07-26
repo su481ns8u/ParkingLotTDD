@@ -12,8 +12,10 @@ import java.util.List;
 
 import static com.parkinglot.enums.CarMakes.BMW;
 import static com.parkinglot.enums.CarMakes.TOYOTA;
+import static com.parkinglot.enums.DriverType.HANDICAP;
 import static com.parkinglot.enums.VehicleColor.BLUE;
 import static com.parkinglot.enums.VehicleColor.WHITE;
+import static com.parkinglot.enums.VehicleType.SMALL;
 
 public class PoliceDept {
     ParkingLotService parkingLotService;
@@ -74,6 +76,21 @@ public class PoliceDept {
                 if (Duration.between(parkSlot.getParkTime(), LocalDateTime.now()).getSeconds() <= 3)
                     vehicleInfo.add(parkingLotService.getVehicleLocation(parkSlot.getVehicle()));
             }
+        return vehicleInfo;
+    }
+
+    public List<String> handicapPermitFraud() throws ParkingLotException {
+        lotList = parkingLotService.getLotList();
+        List<String> vehicleInfo = new ArrayList<>();
+        for (ParkingLot parkingLot : lotList)
+            if (lotList.indexOf(parkingLot) % 2 != 0)
+                for (ParkSlot parkSlot : parkingLot.getParkSlots()) {
+                    if (parkSlot == null)
+                        continue;
+                    if (parkSlot.getVehicle().getDriverType().equals(HANDICAP)
+                            && parkSlot.getVehicle().getVehicleType().equals(SMALL))
+                        vehicleInfo.add(parkingLotService.getVehicleLocation(parkSlot.getVehicle()));
+                }
         return vehicleInfo;
     }
 }

@@ -22,6 +22,7 @@ import static com.parkinglot.enums.DriverType.NORMAL;
 import static com.parkinglot.enums.VehicleColor.BLUE;
 import static com.parkinglot.enums.VehicleColor.WHITE;
 import static com.parkinglot.enums.VehicleType.LARGE;
+import static com.parkinglot.enums.VehicleType.SMALL;
 import static com.parkinglot.exceptions.ParkingLotException.ExceptionType.*;
 
 public class ParkingLotTest {
@@ -30,6 +31,7 @@ public class ParkingLotTest {
     ParkingLot parkingLot2;
     Vehicle firstVehicle;
     Vehicle secondVehicle;
+    Vehicle thirdVehicle;
     PoliceDept policeDept;
     Attendant attendant;
 
@@ -43,8 +45,9 @@ public class ParkingLotTest {
         policeDept = new PoliceDept(parkingLotService);
         attendant = new Attendant("Ramesh");
         parkingLotService.registerAttendant(attendant);
-        firstVehicle = new Vehicle("MH02E4957", TOYOTA, BLUE);
-        secondVehicle = new Vehicle("MH02E5689", BMW, WHITE);
+        firstVehicle = new Vehicle("MH02E4957", TOYOTA, BLUE, SMALL, NORMAL);
+        secondVehicle = new Vehicle("MH02E5689", BMW, WHITE, LARGE, HANDICAP);
+        thirdVehicle = new Vehicle("MH02E5658", TOYOTA, WHITE, SMALL, HANDICAP);
     }
 
     @Test
@@ -61,9 +64,9 @@ public class ParkingLotTest {
         try {
             parkingLotService.park(firstVehicle, attendant);
             parkingLotService.park(secondVehicle, attendant);
-            parkingLotService.park(new Vehicle("car3", BMW, WHITE), attendant);
-            parkingLotService.park(new Vehicle("car4", BMW, WHITE), attendant);
-            parkingLotService.park(new Vehicle("car5", BMW, WHITE), attendant);
+            parkingLotService.park(new Vehicle("car3", BMW, WHITE, SMALL, NORMAL), attendant);
+            parkingLotService.park(new Vehicle("car4", BMW, WHITE, SMALL, NORMAL), attendant);
+            parkingLotService.park(new Vehicle("car5", BMW, WHITE, SMALL, NORMAL), attendant);
         } catch (ParkingLotException e) {
             Assert.assertEquals(LOT_FULL, e.type);
         }
@@ -125,8 +128,8 @@ public class ParkingLotTest {
         try {
             parkingLotService.park(firstVehicle, attendant);
             parkingLotService.park(secondVehicle, attendant);
-            parkingLotService.park(new Vehicle("car3", BMW, WHITE), attendant);
-            parkingLotService.park(new Vehicle("car4", BMW, WHITE), attendant);
+            parkingLotService.park(new Vehicle("car3", BMW, WHITE, SMALL, NORMAL), attendant);
+            parkingLotService.park(new Vehicle("car4", BMW, WHITE, SMALL, NORMAL), attendant);
             Assert.assertTrue(owner.capacityFullStatus());
         } catch (ParkingLotException ignored) {
         }
@@ -139,8 +142,8 @@ public class ParkingLotTest {
         try {
             parkingLotService.park(firstVehicle, attendant);
             parkingLotService.park(secondVehicle, attendant);
-            parkingLotService.park(new Vehicle("car4", BMW, WHITE), attendant);
-            parkingLotService.park(new Vehicle("car3", BMW, WHITE), attendant);
+            parkingLotService.park(new Vehicle("car4", BMW, WHITE, SMALL, NORMAL), attendant);
+            parkingLotService.park(new Vehicle("car3", BMW, WHITE, SMALL, NORMAL), attendant);
             Assert.assertTrue(airportSecurity.capacityFullStatus());
         } catch (ParkingLotException ignored) {
         }
@@ -153,8 +156,8 @@ public class ParkingLotTest {
         try {
             parkingLotService.park(firstVehicle, attendant);
             parkingLotService.park(secondVehicle, attendant);
-            parkingLotService.park(new Vehicle("car3", BMW, WHITE), attendant);
-            parkingLotService.park(new Vehicle("car4", BMW, WHITE), attendant);
+            parkingLotService.park(new Vehicle("car3", BMW, WHITE, SMALL, NORMAL), attendant);
+            parkingLotService.park(new Vehicle("car4", BMW, WHITE, SMALL, NORMAL), attendant);
             Assert.assertTrue(owner.capacityFullStatus());
             parkingLotService.unPark(firstVehicle);
             Assert.assertFalse(owner.capacityFullStatus());
@@ -177,8 +180,8 @@ public class ParkingLotTest {
         try {
             parkingLotService.park(firstVehicle, attendant);
             parkingLotService.park(secondVehicle, attendant);
-            parkingLotService.park(new Vehicle("car3", BMW, WHITE), attendant);
-            String location = parkingLotService.getVehicleLocation(new Vehicle("car3", BMW, WHITE));
+            parkingLotService.park(new Vehicle("car3", BMW, WHITE, SMALL, NORMAL), attendant);
+            String location = parkingLotService.getVehicleLocation(new Vehicle("car3", BMW, WHITE, SMALL, NORMAL));
             Assert.assertEquals("A 1", location);
         } catch (ParkingLotException e) {
             e.printStackTrace();
@@ -223,10 +226,11 @@ public class ParkingLotTest {
         try {
             parkingLotService.park(firstVehicle, attendant);
             parkingLotService.park(secondVehicle, attendant);
-            parkingLotService.park(new Vehicle("car3", BMW, WHITE), attendant);
+            parkingLotService.park(new Vehicle("car3", BMW, WHITE, SMALL, NORMAL), attendant);
             parkingLotService.unPark(firstVehicle);
-            parkingLotService.park(new Vehicle("car4", BMW, WHITE), attendant, HANDICAP);
-            Assert.assertEquals("A 0", parkingLotService.getVehicleLocation(new Vehicle("car4", BMW, WHITE)));
+            parkingLotService.park(new Vehicle("car4", BMW, WHITE, SMALL, HANDICAP), attendant, HANDICAP);
+            Assert.assertEquals("A 0",
+                    parkingLotService.getVehicleLocation(new Vehicle("car4", BMW, WHITE, SMALL, HANDICAP)));
         } catch (ParkingLotException e) {
             e.printStackTrace();
         }
@@ -282,6 +286,17 @@ public class ParkingLotTest {
             List<String> investigationData = policeDept.investigateBombThreatBasedOnTime();
             Assert.assertEquals("B 0", investigationData.get(0));
         } catch (ParkingLotException | InterruptedException ignored) {
+        }
+    }
+
+    @Test
+    public void givenParkedVehicles_WhenPoliceAsksForVehicleInfoInBAndD_ShouldReturnParkedLocations() {
+        try {
+            parkingLotService.park(firstVehicle, attendant, NORMAL);
+            parkingLotService.park(thirdVehicle, attendant, HANDICAP);
+            List<String> investigationData = policeDept.handicapPermitFraud();
+            Assert.assertEquals("B 0", investigationData.get(0));
+        } catch (ParkingLotException ignored) {
         }
     }
 }

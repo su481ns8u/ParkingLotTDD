@@ -1,18 +1,25 @@
 package com.parkinglot.models;
 
 import com.parkinglot.enums.CarMakes;
+import com.parkinglot.enums.DriverType;
 import com.parkinglot.enums.VehicleColor;
+import com.parkinglot.enums.VehicleType;
 
 import java.util.Objects;
 
 public class Vehicle {
     VehicleColor color;
     String plateNumber;
+    VehicleType vehicleType;
+    DriverType driverType;
     CarMakes make;
 
-    public Vehicle(String plateNumber, CarMakes make, VehicleColor vehicleColor) {
+    public Vehicle(String plateNumber, CarMakes make, VehicleColor vehicleColor, VehicleType vehicleType,
+                   DriverType driverType) {
         this.plateNumber = plateNumber;
         this.make = make;
+        this.vehicleType = vehicleType;
+        this.driverType = driverType;
         this.color = vehicleColor;
     }
 
@@ -26,6 +33,14 @@ public class Vehicle {
 
     public String getPlateNumber() {
         return plateNumber;
+    }
+
+    public VehicleType getVehicleType() {
+        return vehicleType;
+    }
+
+    public DriverType getDriverType() {
+        return driverType;
     }
 
     @Override
