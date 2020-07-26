@@ -12,7 +12,8 @@ public class ParkingLotException extends Throwable {
         LOT_FULL("Parking space is not available!"),
         NO_SUCH_VEHICLE("Given vehicle is not present!"),
         INVALID_VEHICLE("Vehicle must not be null!"),
-        CAR_ALREADY_PARKED("Car already parked in lot!");
+        CAR_ALREADY_PARKED("Car already parked in lot!"),
+        ATTENDANT_NOT_REGISTERED("Given attendant is not registered with parking lots!");
 
         String message;
 

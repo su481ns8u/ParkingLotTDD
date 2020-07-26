@@ -8,6 +8,8 @@ import com.parkinglot.services.ParkingLotService;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.parkinglot.enums.CarMakes.TOYOTA;
+import static com.parkinglot.enums.VehicleColor.BLUE;
 import static com.parkinglot.enums.VehicleColor.WHITE;
 
 public class PoliceDept {
@@ -18,7 +20,7 @@ public class PoliceDept {
         this.parkingLotService = parkingLotService;
     }
 
-    public List<String> getWhiteVehicleLocations() throws ParkingLotException {
+    public List<String> investigateBombThreat() throws ParkingLotException {
         lotList = parkingLotService.getLotList();
         List<String> locations = new ArrayList<>();
         for (ParkingLot parkingLot : lotList)
@@ -29,5 +31,20 @@ public class PoliceDept {
                     locations.add(parkingLotService.getVehicleLocation(parkSlot.getVehicle()));
             }
         return locations;
+    }
+
+    public List<String> investigateRobbery() throws ParkingLotException {
+        lotList = parkingLotService.getLotList();
+        List<String> vehicleInfo = new ArrayList<>();
+        for (ParkingLot parkingLot : lotList)
+            for (ParkSlot parkSlot : parkingLot.getParkSlots()) {
+                if (parkSlot == null)
+                    continue;
+                if (parkSlot.getVehicle().getColor().equals(BLUE) && parkSlot.getVehicle().getMake().equals(TOYOTA))
+                    vehicleInfo.add(parkingLotService.getVehicleLocation(parkSlot.getVehicle())
+                            + " " +parkSlot.getVehicle().getPlateNumber()
+                            + " " + parkSlot.getAttendant().getName());
+            }
+        return vehicleInfo;
     }
 }

@@ -2,6 +2,7 @@ package com.parkinglot.services;
 
 import com.parkinglot.enums.ParkingType;
 import com.parkinglot.exceptions.ParkingLotException;
+import com.parkinglot.models.Attendant;
 import com.parkinglot.models.ParkSlot;
 import com.parkinglot.models.ParkingLot;
 import com.parkinglot.models.Vehicle;
@@ -20,11 +21,17 @@ public class ParkingLotService {
     private final List<ParkingLot> lotList;
     private List<ParkSlot> currentSlotList;
     private ParkingLot currentLot;
+    private List<Attendant> lotAttendants;
 
     public ParkingLotService() {
         lotList = new ArrayList<>();
         currentSlotList = new ArrayList<>();
         observers = new ArrayList<>();
+        lotAttendants = new ArrayList<>();
+    }
+
+    public void registerAttendant(Attendant attendant) {
+        lotAttendants.add(attendant);
     }
 
     public void addLot(ParkingLot parkingLot) {
@@ -41,14 +48,15 @@ public class ParkingLotService {
         return currentLot.getEmptySlots().get(0);
     }
 
-    public void park(Vehicle vehicle, ParkingType... parkingTypes) throws ParkingLotException {
+    public void park(Vehicle vehicle, Attendant attendant, ParkingType... parkingTypes) throws ParkingLotException {
         if (vehicle == null) throw new ParkingLotException(INVALID_VEHICLE);
         if (this.parkStatus(vehicle)) throw new ParkingLotException(CAR_ALREADY_PARKED);
         if (areAllLotsFull()) throw new ParkingLotException(LOT_FULL);
+        if (!this.lotAttendants.contains(attendant)) throw new ParkingLotException(ATTENDANT_NOT_REGISTERED);
         int validSlot;
         if (parkingTypes.length == 1) validSlot = this.getSlotToPark(parkingTypes[0]);
         else validSlot = this.getSlotToPark(NORMAL);
-        currentSlotList.set(validSlot, new ParkSlot(vehicle));
+        currentSlotList.set(validSlot, new ParkSlot(attendant, vehicle));
         currentLot.setParkSlots(currentSlotList);
         this.notifyObservers();
     }
