@@ -8,6 +8,7 @@ import com.parkinglot.services.ParkingLotService;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.parkinglot.enums.CarMakes.BMW;
 import static com.parkinglot.enums.CarMakes.TOYOTA;
 import static com.parkinglot.enums.VehicleColor.BLUE;
 import static com.parkinglot.enums.VehicleColor.WHITE;
@@ -44,6 +45,19 @@ public class PoliceDept {
                     vehicleInfo.add(parkingLotService.getVehicleLocation(parkSlot.getVehicle())
                             + " " +parkSlot.getVehicle().getPlateNumber()
                             + " " + parkSlot.getAttendant().getName());
+            }
+        return vehicleInfo;
+    }
+
+    public List<String> increaseSecurity() throws ParkingLotException {
+        lotList = parkingLotService.getLotList();
+        List<String> vehicleInfo = new ArrayList<>();
+        for (ParkingLot parkingLot : lotList)
+            for (ParkSlot parkSlot : parkingLot.getParkSlots()) {
+                if (parkSlot == null)
+                    continue;
+                if (parkSlot.getVehicle().getMake().equals(BMW))
+                    vehicleInfo.add(parkingLotService.getVehicleLocation(parkSlot.getVehicle()));
             }
         return vehicleInfo;
     }

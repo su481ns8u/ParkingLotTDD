@@ -261,4 +261,16 @@ public class ParkingLotTest {
         } catch (ParkingLotException ignored) {
         }
     }
+
+    @Test
+    public void givenParkedVehicles_WhenPoliceAsksToIncreaseSecurity_ShouldReturnAllBMWLocations() {
+        try {
+            parkingLotService.park(firstVehicle, attendant);
+            parkingLotService.park(secondVehicle, attendant);
+            List<String> investigationData = policeDept.increaseSecurity();
+            Assert.assertEquals("B 0", investigationData.get(0));
+        } catch (ParkingLotException e) {
+            e.printStackTrace();
+        }
+    }
 }
