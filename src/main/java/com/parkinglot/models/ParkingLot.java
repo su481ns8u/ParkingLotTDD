@@ -3,6 +3,7 @@ package com.parkinglot.models;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static java.util.stream.IntStream.range;
 
@@ -25,13 +26,11 @@ public class ParkingLot {
     }
 
     public List<Integer> getEmptySlots() {
-        List<Integer> emptyLotList = new ArrayList<>();
-        int count = 0;
-        for (ParkSlot parkSlot : parkSlots) {
-            if (parkSlot == null)
-                emptyLotList.add(count);
-            count++;
-        }
+        List<Integer> emptyLotList;
+        emptyLotList = parkSlots.stream()
+                .filter(Objects::isNull)
+                .map(parkSlot -> parkSlots.indexOf(null))
+                .collect(Collectors.toList());
         return emptyLotList;
     }
 

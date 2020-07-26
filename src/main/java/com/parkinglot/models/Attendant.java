@@ -3,7 +3,7 @@ package com.parkinglot.models;
 import java.util.Objects;
 
 public class Attendant {
-    private String name;
+    private final String name;
 
     public Attendant(String name) {
         this.name = name;

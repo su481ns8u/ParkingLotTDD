@@ -9,7 +9,6 @@ import com.parkinglot.models.Vehicle;
 import com.parkinglot.observers.ParkingLotObserver;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -19,9 +18,9 @@ import static com.parkinglot.exceptions.ParkingLotException.ExceptionType.*;
 public class ParkingLotService {
     private final List<ParkingLotObserver> observers;
     private final List<ParkingLot> lotList;
+    private final List<Attendant> lotAttendants;
     private List<ParkSlot> currentSlotList;
     private ParkingLot currentLot;
-    private List<Attendant> lotAttendants;
 
     public ParkingLotService() {
         lotList = new ArrayList<>();
@@ -38,8 +37,8 @@ public class ParkingLotService {
         lotList.add(parkingLot);
     }
 
-    public void addObserver(ParkingLotObserver... parkingLotObservers) {
-        observers.addAll(Arrays.asList(parkingLotObservers));
+    public void addObserver(ParkingLotObserver parkingLotObservers) {
+        observers.add(parkingLotObservers);
     }
 
     public int getSlotToPark(ParkingType parkingType) {

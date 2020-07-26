@@ -1,4 +1,4 @@
-package com.parkinglot.observers;
+package com.parkinglot.services;
 
 import com.parkinglot.exceptions.ParkingLotException;
 import com.parkinglot.models.ParkSlot;
@@ -9,6 +9,8 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static com.parkinglot.enums.CarMakes.BMW;
 import static com.parkinglot.enums.CarMakes.TOYOTA;
@@ -17,11 +19,11 @@ import static com.parkinglot.enums.VehicleColor.BLUE;
 import static com.parkinglot.enums.VehicleColor.WHITE;
 import static com.parkinglot.enums.VehicleType.SMALL;
 
-public class PoliceDept {
+public class PoliceDepartmentService {
     ParkingLotService parkingLotService;
     List<ParkingLot> lotList;
 
-    public PoliceDept(ParkingLotService parkingLotService) {
+    public PoliceDepartmentService(ParkingLotService parkingLotService) {
         this.parkingLotService = parkingLotService;
     }
 
@@ -92,5 +94,14 @@ public class PoliceDept {
                         vehicleInfo.add(parkingLotService.getVehicleLocation(parkSlot.getVehicle()));
                 }
         return vehicleInfo;
+    }
+
+    public List<String> getAllParkedVehicleNumberPlates() {
+        lotList = parkingLotService.getLotList();
+        return lotList.stream()
+                .flatMap(parkingLot -> parkingLot.getParkSlots().stream())
+                .filter(Objects::nonNull)
+                .map(parkSlot -> parkSlot.getVehicle().getPlateNumber())
+                .collect(Collectors.toList());
     }
 }

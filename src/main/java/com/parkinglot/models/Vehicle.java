@@ -8,11 +8,11 @@ import com.parkinglot.enums.VehicleType;
 import java.util.Objects;
 
 public class Vehicle {
-    VehicleColor color;
-    String plateNumber;
-    VehicleType vehicleType;
-    DriverType driverType;
-    CarMakes make;
+    private final VehicleColor color;
+    private final String plateNumber;
+    private final VehicleType vehicleType;
+    private final DriverType driverType;
+    private final CarMakes make;
 
     public Vehicle(String plateNumber, CarMakes make, VehicleColor vehicleColor, VehicleType vehicleType,
                    DriverType driverType) {
