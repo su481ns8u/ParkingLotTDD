@@ -5,6 +5,8 @@ import com.parkinglot.models.ParkSlot;
 import com.parkinglot.models.ParkingLot;
 import com.parkinglot.services.ParkingLotService;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,7 +45,7 @@ public class PoliceDept {
                     continue;
                 if (parkSlot.getVehicle().getColor().equals(BLUE) && parkSlot.getVehicle().getMake().equals(TOYOTA))
                     vehicleInfo.add(parkingLotService.getVehicleLocation(parkSlot.getVehicle())
-                            + " " +parkSlot.getVehicle().getPlateNumber()
+                            + " " + parkSlot.getVehicle().getPlateNumber()
                             + " " + parkSlot.getAttendant().getName());
             }
         return vehicleInfo;
@@ -57,6 +59,19 @@ public class PoliceDept {
                 if (parkSlot == null)
                     continue;
                 if (parkSlot.getVehicle().getMake().equals(BMW))
+                    vehicleInfo.add(parkingLotService.getVehicleLocation(parkSlot.getVehicle()));
+            }
+        return vehicleInfo;
+    }
+
+    public List<String> investigateBombThreatBasedOnTime() throws ParkingLotException {
+        lotList = parkingLotService.getLotList();
+        List<String> vehicleInfo = new ArrayList<>();
+        for (ParkingLot parkingLot : lotList)
+            for (ParkSlot parkSlot : parkingLot.getParkSlots()) {
+                if (parkSlot == null)
+                    continue;
+                if (Duration.between(parkSlot.getParkTime(), LocalDateTime.now()).getSeconds() <= 3)
                     vehicleInfo.add(parkingLotService.getVehicleLocation(parkSlot.getVehicle()));
             }
         return vehicleInfo;

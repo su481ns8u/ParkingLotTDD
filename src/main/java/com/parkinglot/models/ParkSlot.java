@@ -4,21 +4,25 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class ParkSlot {
-    private final int parkTime;
+    private final LocalDateTime parkTime;
     private final Vehicle vehicle;
     private final Attendant attendant;
 
     public ParkSlot(Attendant attendant, Vehicle vehicle) {
         this.vehicle = vehicle;
         this.attendant = attendant;
-        this.parkTime = LocalDateTime.now().getSecond();
+        this.parkTime = LocalDateTime.now();
     }
 
     public Vehicle getVehicle() {
         return vehicle;
     }
 
-    public int getParkTime() {
+    public int getParkTimeInSecs() {
+        return parkTime.getSecond();
+    }
+
+    public LocalDateTime getParkTime() {
         return parkTime;
     }
 

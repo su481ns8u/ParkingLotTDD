@@ -269,8 +269,19 @@ public class ParkingLotTest {
             parkingLotService.park(secondVehicle, attendant);
             List<String> investigationData = policeDept.increaseSecurity();
             Assert.assertEquals("B 0", investigationData.get(0));
-        } catch (ParkingLotException e) {
-            e.printStackTrace();
+        } catch (ParkingLotException ignored) {
+        }
+    }
+
+    @Test
+    public void givenParkedVehicles_WhenPoliceAsksToInvestigateLast30MinCars_ShouldReturnParkedInLast30min() {
+        try {
+            parkingLotService.park(firstVehicle, attendant);
+            Thread.sleep(4000);
+            parkingLotService.park(secondVehicle, attendant);
+            List<String> investigationData = policeDept.investigateBombThreatBasedOnTime();
+            Assert.assertEquals("B 0", investigationData.get(0));
+        } catch (ParkingLotException | InterruptedException ignored) {
         }
     }
 }

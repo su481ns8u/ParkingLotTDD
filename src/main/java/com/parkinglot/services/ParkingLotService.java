@@ -110,7 +110,7 @@ public class ParkingLotService {
                 .flatMap(parkingLot -> parkingLot.getParkSlots().stream())
                 .filter(Objects::nonNull)
                 .filter(parkSlot -> parkSlot.getVehicle().equals(vehicle))
-                .findFirst().map(ParkSlot::getParkTime)
+                .findFirst().map(ParkSlot::getParkTimeInSecs)
                 .orElseThrow(() -> new ParkingLotException(NO_SUCH_VEHICLE));
     }
 
