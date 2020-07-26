@@ -1,6 +1,6 @@
-package com.parkingLot.observers;
+package com.parkinglot.observers;
 
-public class Owner implements ParkingLotObserver {
+public class AirportSecurity implements ParkingLotObserver {
     private boolean isFull;
 
     @Override

@@ -1,27 +1,32 @@
-package com.parkingLot;
+package com.parkinglot;
 
-import com.parkingLot.exceptions.ParkingLotException;
-import com.parkingLot.models.ParkingLot;
-import com.parkingLot.observers.AirportSecurity;
-import com.parkingLot.observers.Owner;
-import com.parkingLot.services.ParkingLotService;
+import com.parkinglot.exceptions.ParkingLotException;
+import com.parkinglot.models.ParkingLot;
+import com.parkinglot.models.Vehicle;
+import com.parkinglot.observers.AirportSecurity;
+import com.parkinglot.observers.Owner;
+import com.parkinglot.observers.PoliceDept;
+import com.parkinglot.services.ParkingLotService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.time.LocalDateTime;
 
-import static com.parkingLot.enums.DriverType.HANDICAP;
-import static com.parkingLot.enums.DriverType.NORMAL;
-import static com.parkingLot.enums.VehicleType.LARGE;
-import static com.parkingLot.exceptions.ParkingLotException.ExceptionType.*;
+import static com.parkinglot.enums.DriverType.HANDICAP;
+import static com.parkinglot.enums.DriverType.NORMAL;
+import static com.parkinglot.enums.VehicleColor.BLUE;
+import static com.parkinglot.enums.VehicleColor.WHITE;
+import static com.parkinglot.enums.VehicleType.LARGE;
+import static com.parkinglot.exceptions.ParkingLotException.ExceptionType.*;
 
 public class ParkingLotTest {
     ParkingLotService parkingLotService;
     ParkingLot parkingLot1;
     ParkingLot parkingLot2;
-    Object firstVehicle;
-    Object secondVehicle;
+    Vehicle firstVehicle;
+    Vehicle secondVehicle;
+    PoliceDept policeDept;
 
     @Before
     public void setUp() {
@@ -30,8 +35,9 @@ public class ParkingLotTest {
         parkingLotService = new ParkingLotService();
         parkingLotService.addLot(parkingLot1);
         parkingLotService.addLot(parkingLot2);
-        firstVehicle = "car1";
-        secondVehicle = "car2";
+        policeDept = new PoliceDept(parkingLotService);
+        firstVehicle = new Vehicle("car1", BLUE);
+        secondVehicle = new Vehicle("car2", WHITE);
     }
 
     @Test
@@ -48,9 +54,9 @@ public class ParkingLotTest {
         try {
             parkingLotService.park(firstVehicle);
             parkingLotService.park(secondVehicle);
-            parkingLotService.park("car3");
-            parkingLotService.park("car4");
-            parkingLotService.park("car5");
+            parkingLotService.park(new Vehicle("car3", WHITE));
+            parkingLotService.park(new Vehicle("car4", WHITE));
+            parkingLotService.park(new Vehicle("car5", WHITE));
         } catch (ParkingLotException e) {
             Assert.assertEquals(LOT_FULL, e.type);
         }
@@ -112,8 +118,8 @@ public class ParkingLotTest {
         try {
             parkingLotService.park(firstVehicle);
             parkingLotService.park(secondVehicle);
-            parkingLotService.park("car3");
-            parkingLotService.park("car4");
+            parkingLotService.park(new Vehicle("car3", WHITE));
+            parkingLotService.park(new Vehicle("car4", WHITE));
             Assert.assertTrue(owner.capacityFullStatus());
         } catch (ParkingLotException ignored) {
         }
@@ -126,8 +132,8 @@ public class ParkingLotTest {
         try {
             parkingLotService.park(firstVehicle);
             parkingLotService.park(secondVehicle);
-            parkingLotService.park("car3");
-            parkingLotService.park("car4");
+            parkingLotService.park(new Vehicle("car4", WHITE));
+            parkingLotService.park(new Vehicle("car3", WHITE));
             Assert.assertTrue(airportSecurity.capacityFullStatus());
         } catch (ParkingLotException ignored) {
         }
@@ -140,8 +146,8 @@ public class ParkingLotTest {
         try {
             parkingLotService.park(firstVehicle);
             parkingLotService.park(secondVehicle);
-            parkingLotService.park("car3");
-            parkingLotService.park("car4");
+            parkingLotService.park(new Vehicle("car3", WHITE));
+            parkingLotService.park(new Vehicle("car4", WHITE));
             Assert.assertTrue(owner.capacityFullStatus());
             parkingLotService.unPark(firstVehicle);
             Assert.assertFalse(owner.capacityFullStatus());
@@ -164,8 +170,8 @@ public class ParkingLotTest {
         try {
             parkingLotService.park(firstVehicle);
             parkingLotService.park(secondVehicle);
-            parkingLotService.park("car3");
-            String location = parkingLotService.getVehicleLocation("car3");
+            parkingLotService.park(new Vehicle("car3", WHITE));
+            String location = parkingLotService.getVehicleLocation(new Vehicle("car3", WHITE));
             Assert.assertEquals("A 1", location);
         } catch (ParkingLotException e) {
             e.printStackTrace();
@@ -210,10 +216,10 @@ public class ParkingLotTest {
         try {
             parkingLotService.park(firstVehicle);
             parkingLotService.park(secondVehicle);
-            parkingLotService.park("car3");
+            parkingLotService.park(new Vehicle("car3", WHITE));
             parkingLotService.unPark(firstVehicle);
-            parkingLotService.park("car4", HANDICAP);
-            Assert.assertEquals("A 0", parkingLotService.getVehicleLocation("car4"));
+            parkingLotService.park(new Vehicle("car4", WHITE), HANDICAP);
+            Assert.assertEquals("A 0", parkingLotService.getVehicleLocation(new Vehicle("car4", WHITE)));
         } catch (ParkingLotException e) {
             e.printStackTrace();
         }
@@ -225,6 +231,16 @@ public class ParkingLotTest {
             parkingLotService.park(firstVehicle);
             parkingLotService.park(secondVehicle, LARGE);
             Assert.assertEquals("B 0", parkingLotService.getVehicleLocation(secondVehicle));
+        } catch (ParkingLotException ignored) {
+        }
+    }
+
+    @Test
+    public void givenWhiteVehicleParked_WhenPoliceDeptAsksForLocation_ShouldReturnLocation() {
+        try {
+            parkingLotService.park(firstVehicle);
+            parkingLotService.park(secondVehicle);
+            Assert.assertEquals("B 0", policeDept.getWhiteVehicleLocations().get(0));
         } catch (ParkingLotException ignored) {
         }
     }

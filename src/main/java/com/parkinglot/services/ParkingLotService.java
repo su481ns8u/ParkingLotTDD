@@ -1,18 +1,19 @@
-package com.parkingLot.services;
+package com.parkinglot.services;
 
-import com.parkingLot.enums.ParkingType;
-import com.parkingLot.exceptions.ParkingLotException;
-import com.parkingLot.models.ParkSlot;
-import com.parkingLot.models.ParkingLot;
-import com.parkingLot.observers.ParkingLotObserver;
+import com.parkinglot.enums.ParkingType;
+import com.parkinglot.exceptions.ParkingLotException;
+import com.parkinglot.models.ParkSlot;
+import com.parkinglot.models.ParkingLot;
+import com.parkinglot.models.Vehicle;
+import com.parkinglot.observers.ParkingLotObserver;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-import static com.parkingLot.enums.DriverType.NORMAL;
-import static com.parkingLot.exceptions.ParkingLotException.ExceptionType.*;
+import static com.parkinglot.enums.DriverType.NORMAL;
+import static com.parkinglot.exceptions.ParkingLotException.ExceptionType.*;
 
 public class ParkingLotService {
     private final List<ParkingLotObserver> observers;
@@ -40,7 +41,7 @@ public class ParkingLotService {
         return currentLot.getEmptySlots().get(0);
     }
 
-    public void park(Object vehicle, ParkingType... parkingTypes) throws ParkingLotException {
+    public void park(Vehicle vehicle, ParkingType... parkingTypes) throws ParkingLotException {
         if (vehicle == null) throw new ParkingLotException(INVALID_VEHICLE);
         if (this.parkStatus(vehicle)) throw new ParkingLotException(CAR_ALREADY_PARKED);
         if (areAllLotsFull()) throw new ParkingLotException(LOT_FULL);
@@ -52,7 +53,7 @@ public class ParkingLotService {
         this.notifyObservers();
     }
 
-    public void unPark(Object vehicle) throws ParkingLotException {
+    public void unPark(Vehicle vehicle) throws ParkingLotException {
         if (vehicle == null) throw new ParkingLotException(INVALID_VEHICLE);
         if (!this.parkStatus(vehicle)) throw new ParkingLotException(NO_SUCH_VEHICLE);
         lotList.forEach(parkingLot -> parkingLot.getParkSlots()
@@ -64,7 +65,7 @@ public class ParkingLotService {
         this.notifyObservers();
     }
 
-    public boolean parkStatus(Object vehicle) {
+    public boolean parkStatus(Vehicle vehicle) {
         return lotList.stream()
                 .flatMap(parkingLot -> parkingLot.getParkSlots().stream())
                 .filter(Objects::nonNull)
@@ -82,7 +83,7 @@ public class ParkingLotService {
                 .noneMatch(Objects::isNull);
     }
 
-    public String getVehicleLocation(Object vehicle) throws ParkingLotException {
+    public String getVehicleLocation(Vehicle vehicle) throws ParkingLotException {
         int START_OF_CHARS = 65;
         for (ParkingLot parkingLot : lotList)
             for (ParkSlot parkSlot : parkingLot.getParkSlots()) {
@@ -96,12 +97,16 @@ public class ParkingLotService {
         throw new ParkingLotException(NO_SUCH_VEHICLE);
     }
 
-    public int getParkTime(Object vehicle) throws ParkingLotException {
+    public int getParkTime(Vehicle vehicle) throws ParkingLotException {
         return lotList.stream()
                 .flatMap(parkingLot -> parkingLot.getParkSlots().stream())
                 .filter(Objects::nonNull)
                 .filter(parkSlot -> parkSlot.getVehicle().equals(vehicle))
                 .findFirst().map(ParkSlot::getParkTime)
                 .orElseThrow(() -> new ParkingLotException(NO_SUCH_VEHICLE));
+    }
+
+    public List<ParkingLot> getLotList() {
+        return lotList;
     }
 }

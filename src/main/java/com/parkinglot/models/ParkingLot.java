@@ -1,4 +1,4 @@
-package com.parkingLot.models;
+package com.parkinglot.models;
 
 import java.util.ArrayList;
 import java.util.List;

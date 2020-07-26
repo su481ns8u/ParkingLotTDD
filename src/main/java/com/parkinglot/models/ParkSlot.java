@@ -1,18 +1,18 @@
-package com.parkingLot.models;
+package com.parkinglot.models;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class ParkSlot {
     private final int parkTime;
-    private final Object vehicle;
+    private final Vehicle vehicle;
 
-    public ParkSlot(Object vehicle) {
+    public ParkSlot(Vehicle vehicle) {
         this.vehicle = vehicle;
         this.parkTime = LocalDateTime.now().getSecond();
     }
 
-    public Object getVehicle() {
+    public Vehicle getVehicle() {
         return vehicle;
     }
 

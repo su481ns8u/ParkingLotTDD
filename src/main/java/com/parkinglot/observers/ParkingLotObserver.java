@@ -1,4 +1,4 @@
-package com.parkingLot.observers;
+package com.parkinglot.observers;
 
 public interface ParkingLotObserver {
     void isCapacityFull(boolean isFull);

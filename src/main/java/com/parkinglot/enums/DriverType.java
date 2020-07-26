@@ -1,6 +1,6 @@
-package com.parkingLot.enums;
+package com.parkinglot.enums;
 
-import com.parkingLot.models.ParkingLot;
+import com.parkinglot.models.ParkingLot;
 
 import java.util.List;
 

@@ -1,10 +1,10 @@
-package com.parkingLot.enums;
+package com.parkinglot.enums;
 
-import com.parkingLot.models.ParkingLot;
+import com.parkinglot.models.ParkingLot;
 
 import java.util.List;
 
-import static com.parkingLot.enums.DriverType.NORMAL;
+import static com.parkinglot.enums.DriverType.NORMAL;
 
 public enum VehicleType implements ParkingType {
     SMALL {
