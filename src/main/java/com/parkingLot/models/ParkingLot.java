@@ -27,10 +27,18 @@ public class ParkingLot {
     }
 
     public List<Integer> getEmptySlots() {
-        return IntStream.range(0, parkSlots.size())
-                .filter(index -> parkSlots.get(index) == null)
-                .boxed()
-                .collect(Collectors.toList());
+        List<Integer> emptyLotList = new ArrayList<>();
+        int count = 0;
+        for (ParkSlot parkSlot : parkSlots) {
+            if (parkSlot == null)
+                emptyLotList.add(count);
+            count++;
+        }
+        return emptyLotList;
+//        return IntStream.range(0, parkSlots.size())
+//                .filter(index -> parkSlots.get(index) == null)
+//                .boxed()
+//                .collect(Collectors.toList());
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.parkingLot;
 
+import com.parkingLot.enums.DriverType;
 import com.parkingLot.exceptions.ParkingLotException;
 import com.parkingLot.models.ParkingLot;
 import com.parkingLot.observers.AirportSecurity;
@@ -11,6 +12,8 @@ import org.junit.Test;
 
 import java.time.LocalDateTime;
 
+import static com.parkingLot.enums.DriverType.HANDICAP;
+import static com.parkingLot.enums.DriverType.NORMAL;
 import static com.parkingLot.exceptions.ParkingLotException.ExceptionType.*;
 
 public class ParkingLotTest {
@@ -151,7 +154,7 @@ public class ParkingLotTest {
         try {
             parkingLotService.park(firstVehicle);
             parkingLotService.park(secondVehicle);
-            Assert.assertEquals(1, parkingLotService.getSlotToPark());
+            Assert.assertEquals(1, parkingLotService.getSlotToPark(NORMAL));
         } catch (ParkingLotException ignored) {
         }
     }
@@ -160,8 +163,10 @@ public class ParkingLotTest {
     public void givenVehicleObject_ByDriverToParkingLot_ShouldReturnParkPositionOfVehicle() {
         try {
             parkingLotService.park(firstVehicle);
-            String location = parkingLotService.getVehicleLocation(firstVehicle);
-            Assert.assertEquals("A 0", location);
+            parkingLotService.park(secondVehicle);
+            parkingLotService.park("car3");
+            String location = parkingLotService.getVehicleLocation("car3");
+            Assert.assertEquals("A 1", location);
         } catch (ParkingLotException e) {
             e.printStackTrace();
         }
@@ -187,7 +192,6 @@ public class ParkingLotTest {
         }
     }
 
-    //
     @Test
     public void givenMultipleParkingLots_WhenVehiclesParkedEvenly_ShouldReturnTrue() {
         try {
@@ -198,6 +202,20 @@ public class ParkingLotTest {
             //noinspection SimplifiableJUnitAssertion
             Assert.assertTrue(emptyLotsInFirst == emptyLotsInSecond);
         } catch (ParkingLotException ignored) {
+        }
+    }
+
+    @Test
+    public void givenVehicleToParkByHandicapPerson_ShouldPark_AtNearestPosition() {
+        try {
+            parkingLotService.park(firstVehicle);
+            parkingLotService.park(secondVehicle);
+            parkingLotService.park("car3");
+            parkingLotService.unPark(firstVehicle);
+            parkingLotService.park("car4", HANDICAP);
+            Assert.assertEquals("A 0", parkingLotService.getVehicleLocation("car4"));
+        } catch (ParkingLotException e) {
+            e.printStackTrace();
         }
     }
 }

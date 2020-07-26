@@ -1,5 +1,6 @@
 package com.parkingLot.services;
 
+import com.parkingLot.enums.DriverType;
 import com.parkingLot.exceptions.ParkingLotException;
 import com.parkingLot.models.ParkSlot;
 import com.parkingLot.models.ParkingLot;
@@ -8,6 +9,8 @@ import com.parkingLot.observers.ParkingLotObserver;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import static com.parkingLot.enums.DriverType.HANDICAP;
+import static com.parkingLot.enums.DriverType.NORMAL;
 import static com.parkingLot.exceptions.ParkingLotException.ExceptionType.*;
 
 public class ParkingLotService {
@@ -17,7 +20,7 @@ public class ParkingLotService {
     private ParkingLot currentLot;
 
     public ParkingLotService() {
-        lotList = new LinkedList<>();
+        lotList = new ArrayList<>();
         currentSlotList = new ArrayList<>();
         observers = new ArrayList<>();
     }
@@ -30,21 +33,20 @@ public class ParkingLotService {
         observers.addAll(Arrays.asList(parkingLotObservers));
     }
 
-    public int getSlotToPark() {
-        lotList.sort(Comparator
-                .comparing(list -> list.getEmptySlots()
-                        .size(), Comparator.reverseOrder()));
-        currentLot = lotList.get(0);
+    public int getSlotToPark(DriverType driverType) {
+        currentLot = driverType.getLot(lotList);
         currentSlotList = currentLot.getParkSlots();
         return currentLot.getEmptySlots().get(0);
     }
 
-    public void park(Object vehicle) throws ParkingLotException {
+    public void park(Object vehicle, DriverType... driverTypes) throws ParkingLotException {
         if (vehicle == null) throw new ParkingLotException(INVALID_VEHICLE);
         if (this.parkStatus(vehicle)) throw new ParkingLotException(CAR_ALREADY_PARKED);
         if (areAllLotsFull()) throw new ParkingLotException(LOT_FULL);
-        int slot = this.getSlotToPark();
-        currentSlotList.set(slot, new ParkSlot(vehicle));
+        int validSlot = 0;
+        if (driverTypes.length > 0 && driverTypes[0] == HANDICAP) validSlot = this.getSlotToPark(HANDICAP);
+        else validSlot = this.getSlotToPark(NORMAL);
+        currentSlotList.set(validSlot, new ParkSlot(vehicle));
         currentLot.setParkSlots(currentSlotList);
         this.notifyObservers();
     }
@@ -55,8 +57,7 @@ public class ParkingLotService {
         lotList.forEach(parkingLot -> parkingLot.getParkSlots()
                 .stream()
                 .filter(Objects::nonNull)
-                .filter(parkSlot -> parkSlot.getVehicle()
-                        .equals(vehicle))
+                .filter(parkSlot -> parkSlot.getVehicle().equals(vehicle))
                 .forEachOrdered(parkSlot -> parkingLot.getParkSlots()
                         .set(parkingLot.getParkSlots().indexOf(parkSlot), null)));
         this.notifyObservers();
