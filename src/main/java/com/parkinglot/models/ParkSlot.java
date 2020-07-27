@@ -1,7 +1,6 @@
 package com.parkinglot.models;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 public class ParkSlot {
     private final LocalDateTime parkTime;
@@ -35,13 +34,6 @@ public class ParkSlot {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ParkSlot parkSlot = (ParkSlot) o;
-        return parkTime == parkSlot.parkTime &&
-                Objects.equals(vehicle, parkSlot.vehicle) &&
-                Objects.equals(attendant, parkSlot.attendant);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(parkTime, vehicle, attendant);
+        return parkTime == parkSlot.parkTime;
     }
 }

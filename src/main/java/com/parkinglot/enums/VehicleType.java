@@ -8,12 +8,14 @@ import static com.parkinglot.enums.DriverType.NORMAL;
 
 public enum VehicleType implements ParkingType {
     SMALL {
+        @Override
         public ParkingLot getLot(List<ParkingLot> lotList) {
             return NORMAL.getLot(lotList);
         }
     },
 
     LARGE {
+        @Override
         public ParkingLot getLot(List<ParkingLot> lotList) {
             ParkingLot currentLot = lotList.get(0);
             int num = currentLot.getEmptySlots().size();
@@ -24,8 +26,5 @@ public enum VehicleType implements ParkingType {
                 }
             return currentLot;
         }
-    };
-
-    @Override
-    public abstract ParkingLot getLot(List<ParkingLot> lotList);
+    }
 }

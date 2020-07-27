@@ -52,9 +52,4 @@ public class Vehicle {
                 Objects.equals(plateNumber, vehicle.plateNumber) &&
                 Objects.equals(make, vehicle.make);
     }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(color, plateNumber, make);
-    }
 }

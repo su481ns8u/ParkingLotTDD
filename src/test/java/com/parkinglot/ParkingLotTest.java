@@ -2,6 +2,7 @@ package com.parkinglot;
 
 import com.parkinglot.exceptions.ParkingLotException;
 import com.parkinglot.models.Attendant;
+import com.parkinglot.models.ParkSlot;
 import com.parkinglot.models.ParkingLot;
 import com.parkinglot.models.Vehicle;
 import com.parkinglot.observers.AirportSecurity;
@@ -19,6 +20,7 @@ import static com.parkinglot.enums.CarMakes.BMW;
 import static com.parkinglot.enums.CarMakes.TOYOTA;
 import static com.parkinglot.enums.DriverType.HANDICAP;
 import static com.parkinglot.enums.DriverType.NORMAL;
+import static com.parkinglot.enums.InvestigationPredicates.*;
 import static com.parkinglot.enums.VehicleColor.BLUE;
 import static com.parkinglot.enums.VehicleColor.WHITE;
 import static com.parkinglot.enums.VehicleType.LARGE;
@@ -251,7 +253,8 @@ public class ParkingLotTest {
         try {
             parkingLotService.park(firstVehicle, attendant);
             parkingLotService.park(secondVehicle, attendant);
-            Assert.assertEquals("B 0", policeDepartmentService.investigateBombThreat().get(0));
+            List<ParkSlot> investigationData = policeDepartmentService.investigation(BOMB_THREAT_INVESTIGATION);
+            Assert.assertEquals("B 0", parkingLotService.getVehicleLocation(investigationData.get(0).getVehicle()));
         } catch (ParkingLotException ignored) {
         }
     }
@@ -260,8 +263,11 @@ public class ParkingLotTest {
     public void givenParkedVehicles_WhenPoliceDeptAskToInvestigate_ShouldReturnBlueToyotaVehicles() {
         try {
             parkingLotService.park(firstVehicle, attendant);
-            List<String> investigationData = policeDepartmentService.investigateRobbery();
-            Assert.assertEquals("A 0 MH02E4957 Ramesh", investigationData.get(0));
+            List<ParkSlot> investigationData = policeDepartmentService.investigation(INVESTIGATE_ROBBERY);
+            Assert.assertEquals("A 0 MH02E4957 Ramesh",
+                    parkingLotService.getVehicleLocation(investigationData.get(0).getVehicle()) + " " +
+                    investigationData.get(0).getVehicle().getPlateNumber() + " " +
+                    investigationData.get(0).getAttendant().getName());
         } catch (ParkingLotException ignored) {
         }
     }
@@ -271,8 +277,8 @@ public class ParkingLotTest {
         try {
             parkingLotService.park(firstVehicle, attendant);
             parkingLotService.park(secondVehicle, attendant);
-            List<String> investigationData = policeDepartmentService.increaseSecurity();
-            Assert.assertEquals("B 0", investigationData.get(0));
+            List<ParkSlot> investigationData = policeDepartmentService.investigation(INCREASE_SECURITY);
+            Assert.assertEquals("B 0", parkingLotService.getVehicleLocation(investigationData.get(0).getVehicle()));
         } catch (ParkingLotException ignored) {
         }
     }
@@ -283,8 +289,9 @@ public class ParkingLotTest {
             parkingLotService.park(firstVehicle, attendant);
             Thread.sleep(4000);
             parkingLotService.park(secondVehicle, attendant);
-            List<String> investigationData = policeDepartmentService.investigateBombThreatBasedOnTime();
-            Assert.assertEquals("B 0", investigationData.get(0));
+            List<ParkSlot> investigationData = policeDepartmentService.investigation(BOMB_THREAT_BASED_ON_TIME);
+            System.out.println(investigationData);
+            Assert.assertEquals("B 0", parkingLotService.getVehicleLocation(investigationData.get(0).getVehicle()));
         } catch (ParkingLotException | InterruptedException ignored) {
         }
     }
@@ -294,8 +301,8 @@ public class ParkingLotTest {
         try {
             parkingLotService.park(firstVehicle, attendant, NORMAL);
             parkingLotService.park(thirdVehicle, attendant, HANDICAP);
-            List<String> investigationData = policeDepartmentService.handicapPermitFraud();
-            Assert.assertEquals("B 0", investigationData.get(0));
+            List<ParkSlot> investigationData = policeDepartmentService.handicapPermitFraud();
+            Assert.assertEquals("B 0", parkingLotService.getVehicleLocation(investigationData.get(0).getVehicle()));
         } catch (ParkingLotException ignored) {
         }
     }

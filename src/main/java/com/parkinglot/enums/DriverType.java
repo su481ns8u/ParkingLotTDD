@@ -6,6 +6,7 @@ import java.util.List;
 
 public enum DriverType implements ParkingType {
     HANDICAP {
+        @Override
         public ParkingLot getLot(List<ParkingLot> lotList) {
             ParkingLot currentLot = lotList.get(0);
             int num = currentLot.getEmptySlots().get(0);
@@ -19,6 +20,7 @@ public enum DriverType implements ParkingType {
     },
 
     NORMAL {
+        @Override
         public ParkingLot getLot(List<ParkingLot> lotList) {
             int num = lotList.get(0).getEmptySlots().size();
             ParkingLot currentLot = lotList.get(0);
@@ -30,7 +32,4 @@ public enum DriverType implements ParkingType {
             return currentLot;
         }
     };
-
-    @Override
-    public abstract ParkingLot getLot(List<ParkingLot> lotList);
 }

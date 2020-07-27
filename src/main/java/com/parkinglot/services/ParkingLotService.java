@@ -92,16 +92,19 @@ public class ParkingLotService {
 
     public String getVehicleLocation(Vehicle vehicle) throws ParkingLotException {
         int START_OF_CHARS = 65;
-        for (ParkingLot parkingLot : lotList)
-            for (ParkSlot parkSlot : parkingLot.getParkSlots()) {
-                if (parkSlot == null)
-                    continue;
-                if (parkSlot.getVehicle().equals(vehicle))
-                    return (char) (lotList.indexOf(parkingLot) + START_OF_CHARS)
-                            + " "
-                            + parkingLot.getParkSlots().indexOf(parkSlot);
-            }
-        throw new ParkingLotException(NO_SUCH_VEHICLE);
+        ParkSlot refParkSlot = lotList.stream()
+                .flatMap(parkingLot -> parkingLot.getParkSlots().stream())
+                .filter(Objects::nonNull)
+                .filter(parkSlot -> parkSlot.getVehicle().equals(vehicle))
+                .findFirst()
+                .orElseThrow(() -> new ParkingLotException(NO_SUCH_VEHICLE));
+        ParkingLot refParkLot = lotList.stream()
+                .filter(parkingLot -> parkingLot.getParkSlots().contains(refParkSlot))
+                .findFirst()
+                .orElseThrow();
+        return (char) (lotList.indexOf(refParkLot) + START_OF_CHARS)
+                + " "
+                + refParkLot.getParkSlots().indexOf(refParkSlot);
     }
 
     public int getParkTime(Vehicle vehicle) throws ParkingLotException {
