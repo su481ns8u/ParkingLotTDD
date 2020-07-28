@@ -50,6 +50,8 @@ public class Vehicle {
         Vehicle vehicle = (Vehicle) o;
         return color == vehicle.color &&
                 Objects.equals(plateNumber, vehicle.plateNumber) &&
-                Objects.equals(make, vehicle.make);
+                vehicleType == vehicle.vehicleType &&
+                driverType == vehicle.driverType &&
+                make == vehicle.make;
     }
 }
