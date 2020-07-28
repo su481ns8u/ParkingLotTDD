@@ -19,7 +19,7 @@ public class PoliceDepartmentService {
         this.parkingLotService = parkingLotService;
     }
 
-    public List<ParkSlot> investigation(InvestigationPredicates investigationPredicates) {
+    public List<ParkSlot> investigationBasedOnType(InvestigationPredicates investigationPredicates) {
         return parkingLotService.getLotList()
                 .stream()
                 .flatMap(parkingLot -> parkingLot.getParkSlots().stream())
