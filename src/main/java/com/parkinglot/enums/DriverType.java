@@ -31,5 +31,5 @@ public enum DriverType implements ParkingType {
                 }
             return currentLot;
         }
-    };
+    }
 }

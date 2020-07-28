@@ -1,11 +1,9 @@
 package com.parkinglot.services;
 
 import com.parkinglot.enums.InvestigationPredicates;
-import com.parkinglot.exceptions.ParkingLotException;
 import com.parkinglot.models.ParkSlot;
 import com.parkinglot.models.ParkingLot;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -26,7 +24,7 @@ public class PoliceDepartmentService {
                 .stream()
                 .flatMap(parkingLot -> parkingLot.getParkSlots().stream())
                 .filter(Objects::nonNull)
-                .filter(investigationPredicates.getPredicate())
+                .filter(investigationPredicates.comparisionType)
                 .collect(Collectors.toList());
     }
 
