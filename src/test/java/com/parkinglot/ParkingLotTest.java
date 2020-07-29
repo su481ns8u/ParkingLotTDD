@@ -8,7 +8,6 @@ import com.parkinglot.models.Vehicle;
 import com.parkinglot.observers.AirportSecurity;
 import com.parkinglot.observers.Owner;
 import com.parkinglot.services.ParkingLotService;
-import com.parkinglot.services.PoliceDepartmentService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,7 +35,6 @@ public class ParkingLotTest {
     Vehicle firstVehicle;
     Vehicle secondVehicle;
     Vehicle thirdVehicle;
-    PoliceDepartmentService policeDepartmentService;
     Attendant attendant;
 
     @Before
@@ -46,7 +44,6 @@ public class ParkingLotTest {
         parkingLotService = new ParkingLotService();
         parkingLotService.addLot(parkingLot1);
         parkingLotService.addLot(parkingLot2);
-        policeDepartmentService = new PoliceDepartmentService(parkingLotService);
         attendant = new Attendant("Ramesh");
         parkingLotService.registerAttendant(attendant);
         firstVehicle = new Vehicle("MH02E4957", TOYOTA, BLUE, SMALL, NORMAL);
@@ -285,7 +282,7 @@ public class ParkingLotTest {
         try {
             parkingLotService.park(firstVehicle, attendant);
             parkingLotService.park(secondVehicle, attendant);
-            List<ParkSlot> investigationData = policeDepartmentService.investigationBasedOnType(BOMB_THREAT_INVESTIGATION);
+            List<ParkSlot> investigationData = parkingLotService.investigationBasedOnType(BOMB_THREAT_INVESTIGATION);
             assertEquals("B 0", parkingLotService.getVehicleLocation(investigationData.get(0).getVehicle()));
         } catch (ParkingLotException e) {
             fail(e.getMessage());
@@ -296,7 +293,7 @@ public class ParkingLotTest {
     public void givenParkedVehicles_WhenPoliceDeptAskToInvestigate_ShouldReturnBlueToyotaVehicles() {
         try {
             parkingLotService.park(firstVehicle, attendant);
-            List<ParkSlot> investigationData = policeDepartmentService.investigationBasedOnType(INVESTIGATE_ROBBERY);
+            List<ParkSlot> investigationData = parkingLotService.investigationBasedOnType(INVESTIGATE_ROBBERY);
             assertEquals("A 0 MH02E4957 Ramesh",
                     parkingLotService.getVehicleLocation(investigationData.get(0).getVehicle()) + " " +
                     investigationData.get(0).getVehicle().getPlateNumber() + " " +
@@ -311,7 +308,7 @@ public class ParkingLotTest {
         try {
             parkingLotService.park(firstVehicle, attendant);
             parkingLotService.park(secondVehicle, attendant);
-            List<ParkSlot> investigationData = policeDepartmentService.investigationBasedOnType(INCREASE_SECURITY);
+            List<ParkSlot> investigationData = parkingLotService.investigationBasedOnType(INCREASE_SECURITY);
             assertEquals("B 0", parkingLotService.getVehicleLocation(investigationData.get(0).getVehicle()));
         } catch (ParkingLotException e) {
             fail(e.getMessage());
@@ -324,7 +321,7 @@ public class ParkingLotTest {
             parkingLotService.park(firstVehicle, attendant);
             Thread.sleep(4000);
             parkingLotService.park(secondVehicle, attendant);
-            List<ParkSlot> investigationData = policeDepartmentService.investigationBasedOnType(BOMB_THREAT_BASED_ON_TIME);
+            List<ParkSlot> investigationData = parkingLotService.investigationBasedOnType(BOMB_THREAT_BASED_ON_TIME);
             System.out.println(investigationData);
             assertEquals("B 0", parkingLotService.getVehicleLocation(investigationData.get(0).getVehicle()));
         } catch (ParkingLotException | InterruptedException e) {
@@ -337,7 +334,7 @@ public class ParkingLotTest {
         try {
             parkingLotService.park(firstVehicle, attendant, NORMAL);
             parkingLotService.park(thirdVehicle, attendant, HANDICAP);
-            List<ParkSlot> investigationData = policeDepartmentService.handicapPermitFraud();
+            List<ParkSlot> investigationData = parkingLotService.handicapPermitFraud();
             assertEquals("B 0", parkingLotService.getVehicleLocation(investigationData.get(0).getVehicle()));
         } catch (ParkingLotException e) {
             fail(e.getMessage());
@@ -350,7 +347,7 @@ public class ParkingLotTest {
             parkingLotService.park(firstVehicle, attendant);
             parkingLotService.park(secondVehicle, attendant);
             parkingLotService.park(thirdVehicle, attendant, HANDICAP);
-            List<String> investigationData = policeDepartmentService.getAllParkedVehicleNumberPlates();
+            List<String> investigationData = parkingLotService.getAllParkedVehicleNumberPlates();
             assertEquals("MH02E5689", investigationData.get(2));
         } catch (ParkingLotException e) {
             fail(e.getMessage());
